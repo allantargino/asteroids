@@ -50,7 +50,6 @@ void OpenGLWidget::loadSampleModel()
     ship = std::make_shared<Ship>(this);
     ship->readOFFFile(shipFile);
 
-
     QString gunshotFile = "C:\\Repos\\asteroids\\src\\models\\sphere.off";
 
     gunshot = std::make_shared<Gunshot>(this);
