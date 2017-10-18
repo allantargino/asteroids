@@ -33,6 +33,9 @@ void OpenGLWidget::paintGL()
     //Nave do jogador
     ship->drawModel(angle, X, Y, Z);
 
+    //Modelo genérico
+    gunshot->drawModel(angle, X, Y, Z);
+
     //Tiros do jogador
     //gunshot->drawModel(angle, X, Y, Z);
 
@@ -40,34 +43,18 @@ void OpenGLWidget::paintGL()
     //guardar info de radius e center(x,y,z)
 }
 
-void OpenGLWidget::showFileOpenDialog()
-{
-    QByteArray fileFormat = "off ";
-    QString fileName = QFileDialog::getOpenFileName(this,
-        " Open File ", QDir::homePath(),
-        QString("\%1 Files (*.\%2) ").arg(QString(fileFormat.toUpper())).arg(QString(fileFormat)), 0
-#ifdef Q_OS_LINUX
-        ,
-        QFileDialog::DontUseNativeDialog
-#endif
-        );
-    if (!fileName.isEmpty()) {
-        model = std::make_shared<Model>(this);
-        model->readOFFFile(fileName);
-        emit statusBarMessage(QString("Vertices: \%1 , Faces : \%2").arg(model->numVertices).arg(model->numFaces));
-    }
-    update();
-}
-
 void OpenGLWidget::loadSampleModel()
 {
-    QString fileName = "C:\\Repos\\asteroids\\src\\models\\ship.off";
+    QString shipFile = "C:\\Repos\\asteroids\\src\\models\\ship.off";
 
     ship = std::make_shared<Ship>(this);
-    ship->readOFFFile(fileName);
+    ship->readOFFFile(shipFile);
 
-    //gunshot = std::make_shared<Gunshot>(this);
-    //gunshot->readOFFFile(fileName);
+
+    QString gunshotFile = "C:\\Repos\\asteroids\\src\\models\\sphere.off";
+
+    gunshot = std::make_shared<Gunshot>(this);
+    gunshot->readOFFFile(gunshotFile);
 
     update();
 }

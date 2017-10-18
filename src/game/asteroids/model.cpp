@@ -5,8 +5,9 @@ Model::Model(QOpenGLWidget* _glWidget)
     glWidget = _glWidget;
     glWidget->makeCurrent();
     initializeOpenGLFunctions();
-}
 
+    this->atualPoint = QVector3D(0.0, 0.0, 0.0);
+}
 Model::~Model()
 {
     destroyVBOs();
@@ -147,6 +148,7 @@ void Model::createShaders()
 void Model::drawModel(float angle, float X, float Y, float Z)
 {
     modelMatrix.setToIdentity(); //M=I
+    modelMatrix.translate(atualPoint);
     modelMatrix.rotate(angle, X, Y, Z);
     modelMatrix.scale(invDiag*0.1, invDiag*0.1, invDiag*0.1); //M=I*S
     modelMatrix.translate(-midPoint); //M=I*S*T

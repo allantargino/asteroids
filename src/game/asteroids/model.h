@@ -37,6 +37,8 @@ public:
 
     QMatrix4x4 modelMatrix;
     QVector3D midPoint;
+    QVector3D atualPoint;
     double invDiag;
 };
+
 #endif // MODEL_H
