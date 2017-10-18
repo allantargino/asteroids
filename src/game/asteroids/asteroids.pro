@@ -27,13 +27,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    openglwidget.cpp \
-    model.cpp
+        openglwidget.cpp \
+        model.cpp \
+    ship.cpp
+        ship.cpp
 
 HEADERS += \
         mainwindow.h \
-    openglwidget.h \
-    model.h
+        openglwidget.h \
+        model.h \
+        ship.h
 
 FORMS += \
         mainwindow.ui

@@ -27,9 +27,9 @@ void OpenGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (!model)
+    if (!ship)
         return;
-    model->drawModel(angle, X, Y, Z);
+    ship->drawModel(angle, X, Y, Z);
 }
 
 void OpenGLWidget::showFileOpenDialog()
@@ -53,11 +53,11 @@ void OpenGLWidget::showFileOpenDialog()
 
 void OpenGLWidget::loadSampleModel()
 {
-    QString fileName = "C:\\Repos\\computing-graphics-classes\\off-models\\bunny.off";
+    QString fileName = "C:\\Repos\\asteroids\\src\\models\\ship.off";
 
-    model = std::make_shared<Model>(this);
-    model->readOFFFile(fileName);
-    emit statusBarMessage(QString("Vertices: \%1 , Faces : \%2").arg(model->numVertices).arg(model->numFaces));
+    ship = std::make_shared<Ship>(this);
+    ship->readOFFFile(fileName);
+    emit statusBarMessage(QString("Vertices: \%1 , Faces : \%2").arg(ship->numVertices).arg(ship->numFaces));
 
     update();
 }

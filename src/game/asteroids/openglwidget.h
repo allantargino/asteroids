@@ -6,6 +6,7 @@
 #include <QOpenGLExtraFunctions>
 #include "memory.h"
 #include "model.h"
+#include "ship.h"
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
     Q_OBJECT
@@ -13,6 +14,8 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
 public:
     OpenGLWidget(QWidget* parent = 0);
     std::shared_ptr<Model> model = nullptr;
+    std::shared_ptr<Ship> ship = nullptr;
+
     float angle;
     float X;
     float Y;
