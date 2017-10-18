@@ -5,8 +5,8 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
 {
     angle=0.0;
     X=0.0;
-    Y=1.0;
-    Z=0.0;
+    Y=0.0;
+    Z=1.0;
 }
 void OpenGLWidget::initializeGL()
 {
@@ -29,7 +29,12 @@ void OpenGLWidget::paintGL()
 
     if (!ship)
         return;
+
+    //Nave do jogador
     ship->drawModel(angle, X, Y, Z);
+
+    //Tiros do jogador
+    //gunshot->drawModel(angle, X, Y, Z);
 
     //asteroid->drawModel(angle, x, y, z);
     //guardar info de radius e center(x,y,z)
@@ -61,36 +66,10 @@ void OpenGLWidget::loadSampleModel()
     ship = std::make_shared<Ship>(this);
     ship->readOFFFile(fileName);
 
-    update();
-}
-
-void OpenGLWidget::rotateObject(int value)
-{
-    qDebug("Angle: %d", value);
-    angle = value;
+    //gunshot = std::make_shared<Gunshot>(this);
+    //gunshot->readOFFFile(fileName);
 
     update();
-}
-
-void OpenGLWidget::AxisXChecked(bool checked){
-    if(checked)
-        X=1.0;
-    else
-        X=0.0;
-}
-
-void OpenGLWidget::AxisYChecked(bool checked){
-    if(checked)
-        Y=1.0;
-    else
-        Y=0.0;
-}
-
-void OpenGLWidget::AxisZChecked(bool checked){
-    if(checked)
-        Z=1.0;
-    else
-        Z=0.0;
 }
 
 void OpenGLWidget::keyPressEvent(QKeyEvent* event)
@@ -98,10 +77,18 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
     switch (event->key())
     {
     case Qt::Key_Left:
-        angle+=10.0;
+        angle+=5.0;
+        qDebug("Angle: %f", angle);
         break;
     case Qt::Key_Right:
-        angle-=10.0;
+        angle-=5.0;
+        qDebug("Angle: %f", angle);
+        break;
+    case Qt::Key_Up:
+        float xPos, yPos;
+        xPos= ship->atualPoint.x() + 0.05*cos((angle + 90)* (3.1416/180));
+        yPos= ship->atualPoint.y() + 0.05*sin((angle + 90)* (3.1416/180));
+        ship->atualPoint = QVector3D(xPos, yPos, 0);
         break;
     case Qt::Key_Space:
         break;

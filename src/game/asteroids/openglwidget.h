@@ -7,6 +7,7 @@
 #include "memory.h"
 #include "model.h"
 #include "ship.h"
+#include "gunshot.h"
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
     Q_OBJECT
@@ -15,6 +16,7 @@ public:
     OpenGLWidget(QWidget* parent = 0);
     std::shared_ptr<Model> model = nullptr;
     std::shared_ptr<Ship> ship = nullptr;
+    std::shared_ptr<Gunshot> gunshot = nullptr;
 
     float angle;
     float X;
@@ -33,9 +35,5 @@ signals:
 public slots:
     void showFileOpenDialog();
     void loadSampleModel();
-    void rotateObject(int value);
-    void AxisXChecked(bool checked);
-    void AxisYChecked(bool checked);
-    void AxisZChecked(bool checked);
 };
 #endif // OPENGLWIDGET_H

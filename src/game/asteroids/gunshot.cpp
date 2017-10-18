@@ -1,19 +1,20 @@
-#include "model.h"
+#include "gunshot.h"
 
-Model::Model(QOpenGLWidget* _glWidget)
+Gunshot::Gunshot(QOpenGLWidget* _glWidget)
 {
     glWidget = _glWidget;
     glWidget->makeCurrent();
     initializeOpenGLFunctions();
-}
 
-Model::~Model()
+    this->atualPoint = QVector3D(0.0, 0.0, 0.0);
+}
+Gunshot::~Gunshot()
 {
     destroyVBOs();
     destroyShaders();
 }
 
-void Model::destroyVBOs()
+void Gunshot::destroyVBOs()
 {
     glDeleteBuffers(1, &vboVertices);
     glDeleteBuffers(1, &vboIndices);
@@ -23,12 +24,12 @@ void Model::destroyVBOs()
     vao = 0;
 }
 
-void Model::destroyShaders()
+void Gunshot::destroyShaders()
 {
     glDeleteProgram(shaderProgram);
 }
 
-void Model::createVBOs()
+void Gunshot::createVBOs()
 {
     glWidget->makeCurrent();
     destroyVBOs();
@@ -49,7 +50,7 @@ void Model::createVBOs()
         indices.get(), GL_STATIC_DRAW);
 }
 
-void Model::createShaders()
+void Gunshot::createShaders()
 {
     // makeCurrent ();
     destroyShaders();
@@ -144,9 +145,10 @@ void Model::createShaders()
     fs.close();
 }
 
-void Model::drawModel(float angle, float X, float Y, float Z)
+void Gunshot::drawModel(float angle, float X, float Y, float Z)
 {
     modelMatrix.setToIdentity(); //M=I
+    modelMatrix.translate(atualPoint);
     modelMatrix.rotate(angle, X, Y, Z);
     modelMatrix.scale(invDiag*0.1, invDiag*0.1, invDiag*0.1); //M=I*S
     modelMatrix.translate(-midPoint); //M=I*S*T
@@ -159,7 +161,7 @@ void Model::drawModel(float angle, float X, float Y, float Z)
     glDrawElements(GL_TRIANGLES, numFaces * 3, GL_UNSIGNED_INT, 0);
 }
 
-void Model::readOFFFile(QString const& fileName)
+void Gunshot::readOFFFile(QString const& fileName)
 {
     std::ifstream stream;
     stream.open(fileName.toUtf8(), std::ifstream::in);

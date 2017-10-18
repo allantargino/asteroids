@@ -1,5 +1,5 @@
-#ifndef SHIP_H
-#define SHIP_H
+#ifndef GUNSHOT_H
+#define GUNSHOT_H
 
 #include <QtOpenGL>
 #include <QOpenGLWidget>
@@ -11,10 +11,10 @@
 #include <iostream>
 #include <memory>
 
-class Ship : public QOpenGLExtraFunctions {
+class Gunshot : public QOpenGLExtraFunctions {
 public:
-    Ship(QOpenGLWidget* _glWidget);
-    ~Ship();
+    Gunshot(QOpenGLWidget* _glWidget);
+    ~Gunshot();
 
     std::unique_ptr<QVector4D[]> vertices;
     std::unique_ptr<unsigned int[]> indices;
@@ -41,4 +41,4 @@ public:
     double invDiag;
 };
 
-#endif // SHIP_H
+#endif // GUNSHOT_H

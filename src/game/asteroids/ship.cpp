@@ -5,6 +5,8 @@ Ship::Ship(QOpenGLWidget* _glWidget)
     glWidget = _glWidget;
     glWidget->makeCurrent();
     initializeOpenGLFunctions();
+
+    this->atualPoint = QVector3D(0.0, 0.0, 0.0);
 }
 Ship::~Ship()
 {
@@ -146,8 +148,9 @@ void Ship::createShaders()
 void Ship::drawModel(float angle, float X, float Y, float Z)
 {
     modelMatrix.setToIdentity(); //M=I
+    modelMatrix.translate(atualPoint);
     modelMatrix.rotate(angle, X, Y, Z);
-    modelMatrix.scale(invDiag, invDiag, invDiag); //M=I*S
+    modelMatrix.scale(invDiag*0.1, invDiag*0.1, invDiag*0.1); //M=I*S
     modelMatrix.translate(-midPoint); //M=I*S*T
 
     glBindVertexArray(vao);

@@ -29,14 +29,16 @@ SOURCES += \
         mainwindow.cpp \
         openglwidget.cpp \
         model.cpp \
-    ship.cpp
+    ship.cpp \
+    gunshot.cpp
         ship.cpp
 
 HEADERS += \
         mainwindow.h \
         openglwidget.h \
         model.h \
-        ship.h
+        ship.h \
+    gunshot.h
 
 FORMS += \
         mainwindow.ui
