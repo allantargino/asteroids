@@ -92,3 +92,24 @@ void OpenGLWidget::AxisZChecked(bool checked){
     else
         Z=0.0;
 }
+
+void OpenGLWidget::keyPressEvent(QKeyEvent* event)
+{
+    switch (event->key())
+    {
+    case Qt::Key_Left:
+        angle+=10.0;
+        break;
+    case Qt::Key_Right:
+        angle-=10.0;
+        break;
+    case Qt::Key_Space:
+        break;
+    case Qt::Key_Escape:
+        qApp->quit();
+        break;
+    default:
+        break;
+    }
+    update();
+}

@@ -25,6 +25,7 @@ protected:
     void initializeGL();
     void resizeGL(int width, int height);
     void paintGL();
+    void keyPressEvent(QKeyEvent* event);
 
 signals:
     void statusBarMessage(QString);
