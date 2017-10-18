@@ -30,6 +30,9 @@ void OpenGLWidget::paintGL()
     if (!ship)
         return;
     ship->drawModel(angle, X, Y, Z);
+
+    //asteroid->drawModel(angle, x, y, z);
+    //guardar info de radius e center(x,y,z)
 }
 
 void OpenGLWidget::showFileOpenDialog()
@@ -57,7 +60,6 @@ void OpenGLWidget::loadSampleModel()
 
     ship = std::make_shared<Ship>(this);
     ship->readOFFFile(fileName);
-    emit statusBarMessage(QString("Vertices: \%1 , Faces : \%2").arg(ship->numVertices).arg(ship->numFaces));
 
     update();
 }
@@ -67,7 +69,6 @@ void OpenGLWidget::rotateObject(int value)
     qDebug("Angle: %d", value);
     angle = value;
 
-    paintGL();
     update();
 }
 
@@ -90,11 +91,4 @@ void OpenGLWidget::AxisZChecked(bool checked){
         Z=1.0;
     else
         Z=0.0;
-}
-
-void AxisChecked(bool checked, float &axis){
-    if(checked)
-        axis=1.0;
-    else
-        axis=0.0;
 }
