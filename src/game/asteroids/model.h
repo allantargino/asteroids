@@ -33,7 +33,7 @@ public:
     void destroyVBOs();
     void destroyShaders();
     void readOFFFile(const QString& fileName);
-    void drawModel(float angle, float X, float Y, float Z);
+    void drawModel(float angle, float scale);
 
     QMatrix4x4 modelMatrix;
     QVector3D midPoint;

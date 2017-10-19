@@ -4,9 +4,6 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget(parent)
 {
     angle=0.0;
-    X=0.0;
-    Y=0.0;
-    Z=1.0;
 }
 void OpenGLWidget::initializeGL()
 {
@@ -31,10 +28,9 @@ void OpenGLWidget::paintGL()
         return;
 
     //Nave do jogador
-    ship->drawModel(angle, X, Y, Z);
+    ship->drawModel(angle, 0.1);
 
-    //Modelo genérico
-    gunshot->drawModel(angle, X, Y, Z);
+    gunshot->drawModel(angle, 0.05);
 
     //Tiros do jogador
     //gunshot->drawModel(angle, X, Y, Z);
