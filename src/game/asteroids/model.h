@@ -10,18 +10,16 @@
 #include <limits>
 #include <iostream>
 #include <memory>
+#include "offmodel.h"
 
 class Model : public QOpenGLExtraFunctions {
 public:
-    Model(QOpenGLWidget* _glWidget);
+    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel);
     ~Model();
 
-    std::unique_ptr<QVector4D[]> vertices;
-    std::unique_ptr<unsigned int[]> indices;
-
     QOpenGLWidget* glWidget;
-    unsigned int numVertices;
-    unsigned int numFaces;
+
+    std::shared_ptr<OffModel> offModel = nullptr;
 
     GLuint vao = 0;
     GLuint vboVertices = 0;
@@ -32,13 +30,11 @@ public:
     void createShaders();
     void destroyVBOs();
     void destroyShaders();
-    void readOFFFile(const QString& fileName);
     void drawModel(float angle, float scale);
+    void Create();
 
     QMatrix4x4 modelMatrix;
-    QVector3D midPoint;
     QVector3D atualPoint;
-    double invDiag;
 };
 
 #endif // MODEL_H

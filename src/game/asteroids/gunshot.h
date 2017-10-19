@@ -5,7 +5,7 @@
 
 class Gunshot : public Model {
 public:
-    Gunshot(QOpenGLWidget* _glWidget);
+    Gunshot(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel);
     ~Gunshot();
 };
 

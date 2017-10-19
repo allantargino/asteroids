@@ -34,7 +34,7 @@ void OpenGLWidget::paintGL()
     //Nave do jogador
     ship->drawModel(angle, 0.1);
 
-    gunshot->drawModel(angle, 0.05);
+    //gunshot->drawModel(angle, 0.05);
 
     //Tiros do jogador
     //gunshot->drawModel(angle, X, Y, Z);
@@ -45,15 +45,16 @@ void OpenGLWidget::paintGL()
 
 void OpenGLWidget::loadSampleModel()
 {
-    QString shipFile = "C:\\Repos\\asteroids\\src\\models\\ship.off";
+    //QString shipFile = "C:\\Repos\\asteroids\\src\\models\\ship.off";
 
-    ship = std::make_shared<Ship>(this);
-    ship->readOFFFile(shipFile);
+    ship = std::make_shared<Ship>(this, shipOffModel);
+    ship->Create();
+    //ship->readOFFFile(shipFile);
 
-    QString gunshotFile = "C:\\Repos\\asteroids\\src\\models\\sphere.off";
+    //QString gunshotFile = "C:\\Repos\\asteroids\\src\\models\\sphere.off";
 
-    gunshot = std::make_shared<Gunshot>(this);
-    gunshot->readOFFFile(gunshotFile);
+   // gunshot = std::make_shared<Gunshot>(this);
+    //gunshot->readOFFFile(gunshotFile);
 
     update();
 }

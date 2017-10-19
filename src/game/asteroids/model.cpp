@@ -1,7 +1,8 @@
 #include "model.h"
 
-Model::Model(QOpenGLWidget* _glWidget)
+Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel)
 {
+    offModel = _offModel;
     glWidget = _glWidget;
     glWidget->makeCurrent();
     initializeOpenGLFunctions();
@@ -39,15 +40,15 @@ void Model::createVBOs()
 
     glGenBuffers(1, &vboVertices);
     glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(QVector4D), vertices.get(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, offModel->numVertices * sizeof(QVector4D), offModel->vertices.get(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(0);
 
     glGenBuffers(1, &vboIndices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, numFaces * 3 * sizeof(
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, offModel->numFaces * 3 * sizeof(
                                                              unsigned int),
-        indices.get(), GL_STATIC_DRAW);
+        offModel->indices.get(), GL_STATIC_DRAW);
 }
 
 void Model::createShaders()
@@ -150,61 +151,19 @@ void Model::drawModel(float angle, float scale)
     modelMatrix.setToIdentity(); //M=I
     modelMatrix.translate(atualPoint);
     modelMatrix.rotate(angle, 0.0, 0.0, 1.0); // Rotação apenas em Z (plano XY)
-    modelMatrix.scale(invDiag*scale, invDiag*scale, invDiag*scale); //M=I*S
-    modelMatrix.translate(-midPoint); //M=I*S*T
+    modelMatrix.scale(offModel->invDiag*scale, offModel->invDiag*scale, offModel->invDiag*scale); //M=I*S
+    modelMatrix.translate(-offModel->midPoint); //M=I*S*T
 
     glBindVertexArray(vao);
     glUseProgram(shaderProgram);
 
     GLuint locModelMatrix = glGetUniformLocation(shaderProgram, "model");
     glUniformMatrix4fv(locModelMatrix, 1, GL_FALSE, modelMatrix.data());
-    glDrawElements(GL_TRIANGLES, numFaces * 3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, offModel->numFaces * 3, GL_UNSIGNED_INT, 0);
 }
 
-void Model::readOFFFile(QString const& fileName)
+void Model::Create()
 {
-    std::ifstream stream;
-    stream.open(fileName.toUtf8(), std::ifstream::in);
-    if (!stream.is_open()) {
-        qWarning("Cannot open file .");
-        return;
-    }
-    std::string line;
-    stream >> line;
-    stream >> numVertices >> numFaces >> line;
-    vertices = std::make_unique<QVector4D[]>(numVertices);
-    indices = std::make_unique<unsigned int[]>(numFaces * 3);
-
-    if (numVertices > 0) {
-        float minLim = std::numeric_limits<float>::lowest();
-        float maxLim = std::numeric_limits<float>::max();
-        QVector4D max(minLim, minLim, minLim, 1.0);
-        QVector4D min(maxLim, maxLim, maxLim, 1.0);
-        for (unsigned int i = 0; i < numVertices; ++i) {
-            float x, y, z;
-            stream >> x >> y >> z;
-            max.setX(std::max(max.x(), x));
-            max.setY(std::max(max.y(), y));
-            max.setZ(std::max(max.z(), z));
-            min.setX(std::min(min.x(), x));
-            min.setY(std::min(min.y(), y));
-            min.setZ(std::min(min.z(), z));
-            vertices[i] = QVector4D(x, y, z, 1.0);
-        }
-
-        // Modified section
-        this->midPoint = QVector3D((min + max) * 0.5);
-        this->invDiag = 2.0 / (max - min).length();
-
-        for (unsigned int i = 0; i < numFaces; ++i) {
-            unsigned int a, b, c;
-            stream >> line >> a >> b >> c;
-            indices[i * 3 + 0] = a;
-            indices[i * 3 + 1] = b;
-            indices[i * 3 + 2] = c;
-        }
-        stream.close();
-        createShaders();
-        createVBOs();
-    }
+    createShaders();
+    createVBOs();
 }
