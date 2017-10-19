@@ -31,7 +31,8 @@ SOURCES += \
     ship.cpp \
     gunshot.cpp \
     model.cpp \
-    offmodel.cpp
+    offmodel.cpp \
+    modelfactory.cpp
         ship.cpp
 
 HEADERS += \
@@ -40,7 +41,8 @@ HEADERS += \
         ship.h \
     model.h \
     gunshot.h \
-    offmodel.h
+    offmodel.h \
+    modelfactory.h
 
 FORMS += \
         mainwindow.ui
