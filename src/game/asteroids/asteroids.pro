@@ -30,7 +30,8 @@ SOURCES += \
         openglwidget.cpp \
     ship.cpp \
     gunshot.cpp \
-    model.cpp
+    model.cpp \
+    offmodel.cpp
         ship.cpp
 
 HEADERS += \
@@ -38,7 +39,8 @@ HEADERS += \
         openglwidget.h \
         ship.h \
     model.h \
-    gunshot.h
+    gunshot.h \
+    offmodel.h
 
 FORMS += \
         mainwindow.ui

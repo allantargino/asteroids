@@ -4,6 +4,10 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget(parent)
 {
     angle=0.0;
+
+
+    QString shipFile = "C:\\Repos\\asteroids\\src\\models\\ship.off";
+    shipOffModel = std::make_shared<OffModel>(shipFile);
 }
 void OpenGLWidget::initializeGL()
 {

@@ -7,6 +7,7 @@
 #include "memory.h"
 #include "ship.h"
 #include "gunshot.h"
+#include "offmodel.h"
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
     Q_OBJECT
@@ -16,6 +17,8 @@ public:
     std::shared_ptr<Ship> ship = nullptr;
     std::shared_ptr<Gunshot> gunshot = nullptr;
     //std::shared_ptr<Model> model = nullptr;
+
+    std::shared_ptr<OffModel> shipOffModel = nullptr;
 
     float angle;
     float X;
