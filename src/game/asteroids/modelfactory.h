@@ -6,8 +6,14 @@
 
 class ModelFactory {
 public:
-    ModelFactory();
+    ModelFactory(QOpenGLWidget* _glWidget);
     ~ModelFactory();
+
+    QOpenGLWidget* glWidget;
+
+    std::shared_ptr<OffModel> shipOffModel = nullptr;
+    std::shared_ptr<OffModel> gunshotOffModel = nullptr;
+    //std::shared_ptr<OffModel> asteroidOffModel = nullptr;
 
     std::shared_ptr<Ship> GetShipInstance();
     std::shared_ptr<Gunshot> GetGunshotInstance();

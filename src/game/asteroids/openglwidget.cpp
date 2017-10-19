@@ -5,8 +5,7 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
 {
     angle=0.0;
 
-    QString shipFile = "C:\\Repos\\asteroids\\src\\models\\ship.off";
-    shipOffModel = std::make_shared<OffModel>(shipFile);
+    factory = std::make_shared<ModelFactory>(this);
 }
 void OpenGLWidget::initializeGL()
 {
@@ -37,7 +36,7 @@ void OpenGLWidget::paintGL()
         return;
 
     //Tiros do jogador
-    gunshot->drawModel(angle, 0.05);
+    //gunshot->drawModel(angle, 0.05);
 
     //Tiros do jogador
     //gunshot->drawModel(angle, X, Y, Z);
@@ -48,19 +47,13 @@ void OpenGLWidget::paintGL()
 
 void OpenGLWidget::loadSampleModel()
 {
-    //QString shipFile = "C:\\Repos\\asteroids\\src\\models\\ship.off";
+    //ship = std::make_shared<Ship>(this, shipOffModel);
+    //ship->Create();
 
-    ship = std::make_shared<Ship>(this, shipOffModel);
-    ship->Create();
-    //ship->readOFFFile(shipFile);
+    ship = factory->GetShipInstance();
 
-    //QString gunshotFile = "C:\\Repos\\asteroids\\src\\models\\sphere.off";
-
-    gunshot = std::make_shared<Gunshot>(this, shipOffModel);
-    gunshot->Create();
-
-   // gunshot = std::make_shared<Gunshot>(this);
-    //gunshot->readOFFFile(gunshotFile);
+    //gunshot = std::make_shared<Gunshot>(this, shipOffModel);
+    //gunshot->Create();
 
     update();
 }
