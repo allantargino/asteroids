@@ -16,6 +16,7 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
 public:
     OpenGLWidget(QWidget* parent = 0);
     std::shared_ptr<Ship> ship = nullptr;
+    std::shared_ptr<Ship> ship2 = nullptr;
     std::shared_ptr<Gunshot> gunshot = nullptr;
 
     std::shared_ptr<ModelFactory> factory = nullptr;

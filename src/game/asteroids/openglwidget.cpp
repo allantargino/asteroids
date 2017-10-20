@@ -32,6 +32,8 @@ void OpenGLWidget::paintGL()
     //Nave do jogador
     ship->drawModel(angle, 0.1);
 
+    ship2->drawModel(angle, 0.05);
+
     if (!gunshot)
         return;
 
@@ -51,6 +53,7 @@ void OpenGLWidget::loadSampleModel()
     //ship->Create();
 
     ship = factory->GetShipInstance();
+    ship2 = factory->GetShipInstance();
 
     //gunshot = std::make_shared<Gunshot>(this, shipOffModel);
     //gunshot->Create();
