@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT          += core gui opengl
+QT          += core gui opengl multimedia
 CONFIG      += c++14
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -30,7 +30,9 @@ SOURCES += \
         openglwidget.cpp \
     ship.cpp \
     gunshot.cpp \
-    model.cpp
+    model.cpp \
+    offmodel.cpp \
+    modelfactory.cpp
         ship.cpp
 
 HEADERS += \
@@ -38,7 +40,9 @@ HEADERS += \
         openglwidget.h \
         ship.h \
     model.h \
-    gunshot.h
+    gunshot.h \
+    offmodel.h \
+    modelfactory.h
 
 FORMS += \
         mainwindow.ui

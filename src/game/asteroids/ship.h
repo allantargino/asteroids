@@ -5,7 +5,7 @@
 
 class Ship : public Model {
 public:
-    Ship(QOpenGLWidget* _glWidget);
+    Ship(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel);
     ~Ship();
 };
 
