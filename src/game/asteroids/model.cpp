@@ -4,10 +4,12 @@ Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel)
 {
     offModel = _offModel;
     glWidget = _glWidget;
+
     glWidget->makeCurrent();
-    initializeOpenGLFunctions();
 
     this->atualPoint = QVector3D(0.0, 0.0, 0.0);
+
+    initializeOpenGLFunctions();
 }
 Model::~Model()
 {

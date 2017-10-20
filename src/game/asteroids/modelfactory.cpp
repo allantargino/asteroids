@@ -23,5 +23,7 @@ std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
 }
 
 std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(){
-
+    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel);
+    gunshot->Create();
+    return gunshot;
 }
