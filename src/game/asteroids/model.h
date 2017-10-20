@@ -35,6 +35,7 @@ public:
 
     QMatrix4x4 modelMatrix;
     QVector3D atualPoint;
+    int hitBoxRadius;
 };
 
 #endif // MODEL_H
