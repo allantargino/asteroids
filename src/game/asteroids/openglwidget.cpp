@@ -122,12 +122,12 @@ void OpenGLWidget::animate()
         gunshot.reset();
     }
 
-    //10 shots:
-    for (int i = 0; i < 10; ++i) {
-        if(ponteiro[i]){ //if exists
-            //animate
-        }
-    }
+    ////10 shots:
+    //for (int i = 0; i < 10; ++i) {
+    //    if(ponteiro[i]){ //if exists
+    //        //animate
+    //    }
+    //}
 
     //during delete, insert
 
