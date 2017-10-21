@@ -30,12 +30,13 @@ public:
     void createShaders();
     void destroyVBOs();
     void destroyShaders();
-    void drawModel(float angle, float scale);
+    void drawModel(float scale);
     void Create();
 
     QMatrix4x4 modelMatrix;
     QVector3D atualPoint;
     int hitBoxRadius;
+    float angle;
 };
 
 #endif // MODEL_H

@@ -3,8 +3,6 @@
 OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget(parent)
 {
-    angle=0.0;
-
     factory = std::make_shared<ModelFactory>(this);
 
     player = new QMediaPlayer;
@@ -40,13 +38,13 @@ void OpenGLWidget::paintGL()
         return;
 
     //Nave do jogador
-    ship->drawModel(angle, 0.1);
+    ship->drawModel(0.1);
 
     if (!gunshot)
         return;
 
     //Tiros do jogador
-    gunshot->drawModel(angle, 0.02);
+    gunshot->drawModel(0.02);
 
     //Tiros do jogador
     //gunshot->drawModel(angle, X, Y, Z);
@@ -73,27 +71,19 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
     switch (event->key())
     {
     case Qt::Key_Left:
-        angle+=5.0;
-        qDebug("Angle: %f", angle);
+        ship->angle+=5.0;
         break;
     case Qt::Key_Right:
-        angle-=5.0;
-        qDebug("Angle: %f", angle);
+        ship->angle-=5.0;
         break;
     case Qt::Key_Up:
         float xPos, yPos;
-        xPos= ship->atualPoint.x() + 0.05*cos((angle + 90)* (3.1416/180));
-        yPos= ship->atualPoint.y() + 0.05*sin((angle + 90)* (3.1416/180));
+        xPos= ship->atualPoint.x() + 0.05*cos((ship->angle + 90)* (3.1416/180));
+        yPos= ship->atualPoint.y() + 0.05*sin((ship->angle + 90)* (3.1416/180));
         ship->atualPoint = QVector3D(xPos, yPos, 0);
         break;
     case Qt::Key_Space:
-        float xShipPos, yShipPos;
-        xShipPos= ship->atualPoint.x() + 0.05*cos((angle + 90)* (3.1416/180));
-        yShipPos= ship->atualPoint.y() + 0.05*sin((angle + 90)* (3.1416/180));
-
-        gunshot = factory->GetGunshotInstance();
-        gunshot->atualPoint = QVector3D(xShipPos, yShipPos, 0);
-
+        gunshot = factory->GetGunshotInstance(ship.get());
         player->play();
         break;
     case Qt::Key_Escape:
@@ -113,8 +103,8 @@ void OpenGLWidget::animate()
         return;
 
     float xPos, yPos;
-    xPos= gunshot->atualPoint.x() + elapsedTime * 2 * cos((angle + 90)* (3.1416/180));
-    yPos= gunshot->atualPoint.y() + elapsedTime * 2 * sin((angle + 90)* (3.1416/180));
+    xPos= gunshot->atualPoint.x() + elapsedTime * 2 * cos((gunshot->angle + 90)* (3.1416/180));
+    yPos= gunshot->atualPoint.y() + elapsedTime * 2 * sin((gunshot->angle + 90)* (3.1416/180));
     gunshot->atualPoint =  QVector3D(xPos, yPos, 0);
 
     //Limits:

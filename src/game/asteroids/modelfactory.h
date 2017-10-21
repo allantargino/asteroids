@@ -16,7 +16,7 @@ public:
     //std::shared_ptr<OffModel> asteroidOffModel = nullptr;
 
     std::shared_ptr<Ship> GetShipInstance();
-    std::shared_ptr<Gunshot> GetGunshotInstance();
+    std::shared_ptr<Gunshot> GetGunshotInstance(Ship* ship);
     //std::shared_ptr<Asteroid> GetAsteroidInstance();
 };
 

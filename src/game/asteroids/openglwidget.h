@@ -22,8 +22,6 @@ public:
 
     std::shared_ptr<ModelFactory> factory = nullptr;
 
-    float angle;
-
     QTimer timer;
     QTime time;
 

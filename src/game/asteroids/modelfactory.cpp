@@ -22,8 +22,14 @@ std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
     return ship;
 }
 
-std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(){
+std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
     std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel);
     gunshot->Create();
+
+    float x= ship->atualPoint.x() + 0.05*cos((ship->angle + 90)* (3.1416/180));
+    float y= ship->atualPoint.y() + 0.05*sin((ship->angle + 90)* (3.1416/180));
+    gunshot->atualPoint = QVector3D(x, y, 0);
+    gunshot->angle = ship->angle;
+
     return gunshot;
 }
