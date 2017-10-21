@@ -34,25 +34,18 @@ void OpenGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    //Nave do jogador
     if (!ship)
         return;
+    ship->drawModel(Physics::shipSize);
 
-    //Nave do jogador
-    ship->drawModel(0.1);
-
-    //if (!gunshot)
-    //    return;
-
+    //Tiros da nave
     QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
     while (i.hasNext()) {
         i.next();
         if(i.value())
-            i.value()->drawModel(0.02);
+            i.value()->drawModel(Physics::gunshotSize);
     }
-
-    //Tiros do jogador
-   // gunshot->drawModel(0.02);
-
 
     //asteroid->drawModel(angle, x, y, z);
     //guardar info de radius e center(x,y,z)
@@ -60,13 +53,7 @@ void OpenGLWidget::paintGL()
 
 void OpenGLWidget::loadSampleModel()
 {
-    //ship = std::make_shared<Ship>(this, shipOffModel);
-    //ship->Create();
-
     ship = factory->GetShipInstance();
-
-    //gunshot = std::make_shared<Gunshot>(this, shipOffModel);
-    //gunshot->Create();
 
     update();
 }
