@@ -3,7 +3,7 @@
 OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget(parent)
 {
-    factory = std::make_shared<ModelFactory>(this);
+    factory = std::make_unique<ModelFactory>(this);
 
     player = new QMediaPlayer;
 

@@ -18,17 +18,17 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
     Q_OBJECT
 
 public:
+    //OpenGL:
     OpenGLWidget(QWidget* parent = 0);
+    //Models:
     std::shared_ptr<Ship> ship = nullptr;
-    //std::shared_ptr<Gunshot> gunshot = nullptr;
-
     QHash<QString, std::shared_ptr<Gunshot>> gunshots;
-
-    std::shared_ptr<ModelFactory> factory = nullptr;
-
+    //Model Factory:
+    std::unique_ptr<ModelFactory> factory = nullptr;
+    //Animation:
     QTimer timer;
     QTime time;
-
+    //Sounds:
     QMediaPlayer* player;
 
 protected:
