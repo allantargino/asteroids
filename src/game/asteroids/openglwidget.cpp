@@ -40,14 +40,19 @@ void OpenGLWidget::paintGL()
     //Nave do jogador
     ship->drawModel(0.1);
 
-    if (!gunshot)
-        return;
+    //if (!gunshot)
+    //    return;
+
+    QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
+    while (i.hasNext()) {
+        i.next();
+        if(i.value())
+            i.value()->drawModel(0.02);
+    }
 
     //Tiros do jogador
-    gunshot->drawModel(0.02);
+   // gunshot->drawModel(0.02);
 
-    //Tiros do jogador
-    //gunshot->drawModel(angle, X, Y, Z);
 
     //asteroid->drawModel(angle, x, y, z);
     //guardar info de radius e center(x,y,z)
@@ -83,8 +88,12 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
         ship->atualPoint = QVector3D(xPos, yPos, 0);
         break;
     case Qt::Key_Space:
-        gunshot = factory->GetGunshotInstance(ship.get());
+    {
+        auto gunshot = factory->GetGunshotInstance(ship.get());
+        gunshots[gunshot->id] = gunshot;
+
         player->play();
+    }
         break;
     case Qt::Key_Escape:
         qApp->quit();
@@ -99,27 +108,25 @@ void OpenGLWidget::animate()
 {
     float elapsedTime = time.restart() / 1000.0f;
 
-    if (!gunshot)
-        return;
+    QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
+    while (i.hasNext()) {
+        i.next();
+        if(i.value())
+        {
+            auto gunshot = i.value();
 
-    float xPos, yPos;
-    xPos= gunshot->atualPoint.x() + elapsedTime * 2 * cos((gunshot->angle + 90)* (3.1416/180));
-    yPos= gunshot->atualPoint.y() + elapsedTime * 2 * sin((gunshot->angle + 90)* (3.1416/180));
-    gunshot->atualPoint =  QVector3D(xPos, yPos, 0);
+            float xPos, yPos;
+            xPos= gunshot->atualPoint.x() + elapsedTime * 2 * cos((gunshot->angle + 90)* (3.1416/180));
+            yPos= gunshot->atualPoint.y() + elapsedTime * 2 * sin((gunshot->angle + 90)* (3.1416/180));
+            gunshot->atualPoint =  QVector3D(xPos, yPos, 0);
 
-    //Limits:
-    if(qAbs(gunshot->atualPoint.x())>1.2 || qAbs(gunshot->atualPoint.y()) >1.2){
-        gunshot.reset();
+            //Limits:
+            if(qAbs(gunshot->atualPoint.x())>1.2 || qAbs(gunshot->atualPoint.y()) >1.2){
+                gunshots.remove(gunshot->id);
+                gunshot.reset();
+            }
+        }
     }
-
-    ////10 shots:
-    //for (int i = 0; i < 10; ++i) {
-    //    if(ponteiro[i]){ //if exists
-    //        //animate
-    //    }
-    //}
-
-    //during delete, insert
 
     update();
 }

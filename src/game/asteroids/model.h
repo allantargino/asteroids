@@ -35,6 +35,8 @@ public:
 
     QMatrix4x4 modelMatrix;
     QVector3D atualPoint;
+
+    QString id;
     int hitBoxRadius;
     float angle;
 };

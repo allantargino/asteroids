@@ -6,6 +6,7 @@
 #include <QOpenGLExtraFunctions>
 #include <QtMath>
 #include <QMediaPlayer>
+#include <QHash>
 #include "memory.h"
 #include "ship.h"
 #include "gunshot.h"
@@ -18,7 +19,9 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
 public:
     OpenGLWidget(QWidget* parent = 0);
     std::shared_ptr<Ship> ship = nullptr;
-    std::shared_ptr<Gunshot> gunshot = nullptr;
+    //std::shared_ptr<Gunshot> gunshot = nullptr;
+
+    QHash<QString, std::shared_ptr<Gunshot>> gunshots;
 
     std::shared_ptr<ModelFactory> factory = nullptr;
 

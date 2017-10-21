@@ -1,6 +1,7 @@
 #ifndef MODELFACTORY_H
 #define MODELFACTORY_H
 
+#include <QUuid>
 #include "ship.h"
 #include "gunshot.h"
 
