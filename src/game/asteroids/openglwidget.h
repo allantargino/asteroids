@@ -30,7 +30,8 @@ public:
     QTimer timer;
     QTime time;
     //Sounds:
-    QMediaPlayer* player;
+    QMediaPlayer* shotPlayer;
+    QMediaPlayer* asteroidPlayer;
 
 protected:
     void initializeGL();
@@ -38,8 +39,18 @@ protected:
     void paintGL();
     void keyPressEvent(QKeyEvent* event);
 
+private:
+    int currentPoints;
+    int topPoints;
+
+    void increasePlayerScore();
+
 public slots:
-    void loadSampleModel();
+    void startGame();
     void animate();
+
+signals:
+    void updateCurrentPoints(int points);
+    void updateTopPoints(int points);
 };
 #endif // OPENGLWIDGET_H

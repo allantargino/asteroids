@@ -5,10 +5,16 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
 {
     factory = std::make_unique<ModelFactory>(this);
 
-    player = new QMediaPlayer;
+    shotPlayer = new QMediaPlayer;
+    shotPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\fire.wav"));
+    shotPlayer->setVolume(100);
 
-    player->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\fire.wav"));
-    player->setVolume(100);
+    asteroidPlayer = new QMediaPlayer;
+    asteroidPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\bangSmall.wav"));
+    asteroidPlayer->setVolume(100);
+
+    currentPoints = 0;
+    topPoints=0;
 }
 void OpenGLWidget::initializeGL()
 {
@@ -54,13 +60,13 @@ void OpenGLWidget::paintGL()
         if(i_ast.value())
             i_ast.value()->drawModel();
     }
-
-    //asteroid->drawModel(angle, x, y, z);
-    //guardar info de radius e center(x,y,z)
 }
 
-void OpenGLWidget::loadSampleModel()
+void OpenGLWidget::startGame()
 {
+    currentPoints = 0;
+    emit updateCurrentPoints(currentPoints);
+
     ship = factory->GetShipInstance();
 
     update();
@@ -84,7 +90,7 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
         auto gunshot = factory->GetGunshotInstance(ship.get());
         gunshots[gunshot->id] = gunshot;
 
-        player->play();
+        shotPlayer->play();
     }
         break;
     case Qt::Key_A:
@@ -137,6 +143,8 @@ void OpenGLWidget::animate()
                         auto asteroid = i_ast.value();
                         if(gunshot->CalculateColision(asteroid.get())){
                             qDebug("Colision Detected!!");
+                            asteroidPlayer->play();
+                            increasePlayerScore();
                             gunshots.remove(gunshot->id);
                             gunshot.reset();
                             asteroids.remove(asteroid->id);
@@ -179,4 +187,14 @@ void OpenGLWidget::animate()
     }
 
     update();
+}
+
+void OpenGLWidget::increasePlayerScore(){
+    currentPoints++;
+    emit updateCurrentPoints(currentPoints);
+    if(currentPoints>topPoints){
+        topPoints = currentPoints;
+        emit updateTopPoints(topPoints);
+    }
+
 }

@@ -42,13 +42,13 @@
      <enum>Qt::StrongFocus</enum>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>140</y>
+      <x>690</x>
+      <y>170</y>
       <width>261</width>
-      <height>81</height>
+      <height>71</height>
      </rect>
     </property>
     <property name="font">
@@ -61,7 +61,7 @@
      <string>Iniciar o jogo!</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="lblPontos">
     <property name="geometry">
      <rect>
       <x>670</x>
@@ -80,7 +80,7 @@
      <string>Pontos</string>
     </property>
    </widget>
-   <widget class="QLCDNumber" name="lcdNumber">
+   <widget class="QLCDNumber" name="counter_current">
     <property name="geometry">
      <rect>
       <x>830</x>
@@ -104,7 +104,7 @@
      <number>0</number>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="lblTopScore">
     <property name="geometry">
      <rect>
       <x>670</x>
@@ -123,7 +123,7 @@
      <string>Top Score</string>
     </property>
    </widget>
-   <widget class="QLCDNumber" name="lcdNumber_2">
+   <widget class="QLCDNumber" name="counter_top">
     <property name="geometry">
      <rect>
       <x>830</x>
@@ -147,19 +147,6 @@
      <number>0</number>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>300</y>
-      <width>55</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
   </widget>
   <action name="actionOpen_File">
    <property name="text">
@@ -174,7 +161,10 @@
    <extends>QOpenGLWidget</extends>
    <header>openglwidget.h</header>
    <slots>
+    <signal>updateCurrentPoints(int)</signal>
+    <signal>updateTopPoints(int)</signal>
     <signal>statusBarMessage(QString)</signal>
+    <slot>startGame()</slot>
     <slot>showFileOpenDialog()</slot>
     <slot>loadSampleModel()</slot>
     <slot>rotateObject(int)</slot>
@@ -187,10 +177,10 @@
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>startButton</sender>
    <signal>clicked()</signal>
    <receiver>openGLWidget</receiver>
-   <slot>loadSampleModel()</slot>
+   <slot>startGame()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>875</x>
@@ -199,6 +189,38 @@
     <hint type="destinationlabel">
      <x>365</x>
      <y>275</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openGLWidget</sender>
+   <signal>updateCurrentPoints(int)</signal>
+   <receiver>counter_current</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>329</x>
+     <y>439</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>905</x>
+     <y>470</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openGLWidget</sender>
+   <signal>updateTopPoints(int)</signal>
+   <receiver>counter_top</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>329</x>
+     <y>439</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>905</x>
+     <y>630</y>
     </hint>
    </hints>
   </connection>
