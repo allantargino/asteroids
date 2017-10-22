@@ -47,6 +47,14 @@ void OpenGLWidget::paintGL()
             i.value()->drawModel(Physics::gunshotSize);
     }
 
+    //Asteroids
+    QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
+    while (i_ast.hasNext()) {
+        i_ast.next();
+        if(i_ast.value())
+            i_ast.value()->drawModel(Physics::asteroidLSize);
+    }
+
     //asteroid->drawModel(angle, x, y, z);
     //guardar info de radius e center(x,y,z)
 }
@@ -63,16 +71,13 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
     switch (event->key())
     {
     case Qt::Key_Left:
-        ship->angle+=5.0;
+        ship->MoveLeft();
         break;
     case Qt::Key_Right:
-        ship->angle-=5.0;
+        ship->MoveRight();
         break;
     case Qt::Key_Up:
-        float xPos, yPos;
-        xPos= ship->atualPoint.x() + 0.05*cos((ship->angle + 90)* (3.1416/180));
-        yPos= ship->atualPoint.y() + 0.05*sin((ship->angle + 90)* (3.1416/180));
-        ship->atualPoint = QVector3D(xPos, yPos, 0);
+        ship->MoveUp();
         break;
     case Qt::Key_Space:
     {
@@ -80,6 +85,12 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
         gunshots[gunshot->id] = gunshot;
 
         player->play();
+    }
+        break;
+    case Qt::Key_A:
+    {
+        auto asteroid = factory->GetAsteroidInstance();
+        asteroids[asteroid->id] = asteroid;
     }
         break;
     case Qt::Key_Escape:
@@ -95,6 +106,7 @@ void OpenGLWidget::animate()
 {
     float elapsedTime = time.restart() / 1000.0f;
 
+    //Gunshots
     QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
     while (i.hasNext()) {
         i.next();
@@ -111,6 +123,28 @@ void OpenGLWidget::animate()
             if(qAbs(gunshot->atualPoint.x())>1.2 || qAbs(gunshot->atualPoint.y()) >1.2){
                 gunshots.remove(gunshot->id);
                 gunshot.reset();
+            }
+        }
+    }
+
+
+    //Asteroids
+    QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
+    while (i_ast.hasNext()) {
+        i_ast.next();
+        if(i_ast.value())
+        {
+            auto asteroid = i_ast.value();
+
+            float xPos, yPos;
+            xPos= asteroid->atualPoint.x() + elapsedTime * 0.5 * cos((asteroid->angle)* (3.1416/180));
+            yPos= asteroid->atualPoint.y() + elapsedTime * 0.5 * sin((asteroid->angle)* (3.1416/180));
+            asteroid->atualPoint =  QVector3D(xPos, yPos, 0);
+
+            //Limits:
+            if(qAbs(asteroid->atualPoint.x())>1.4 || qAbs(asteroid->atualPoint.y()) >1.4){
+                asteroids.remove(asteroid->id);
+                asteroid.reset();
             }
         }
     }

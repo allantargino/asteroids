@@ -10,6 +10,7 @@
 #include "memory.h"
 #include "ship.h"
 #include "gunshot.h"
+#include "asteroid.h"
 #include "offmodel.h"
 #include "modelfactory.h"
 #include "physics.h"
@@ -23,6 +24,7 @@ public:
     //Models:
     std::shared_ptr<Ship> ship = nullptr;
     QHash<QString, std::shared_ptr<Gunshot>> gunshots;
+    QHash<QString, std::shared_ptr<Asteroid>> asteroids;
     //Model Factory:
     std::unique_ptr<ModelFactory> factory = nullptr;
     //Animation:

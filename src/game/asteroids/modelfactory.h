@@ -4,6 +4,7 @@
 #include <QUuid>
 #include "ship.h"
 #include "gunshot.h"
+#include "asteroid.h"
 
 class ModelFactory {
 public:
@@ -14,11 +15,11 @@ public:
 
     std::shared_ptr<OffModel> shipOffModel = nullptr;
     std::shared_ptr<OffModel> gunshotOffModel = nullptr;
-    //std::shared_ptr<OffModel> asteroidOffModel = nullptr;
+    std::shared_ptr<OffModel> asteroidOffModel = nullptr;
 
     std::shared_ptr<Ship> GetShipInstance();
     std::shared_ptr<Gunshot> GetGunshotInstance(Ship* ship);
-    //std::shared_ptr<Asteroid> GetAsteroidInstance();
+    std::shared_ptr<Asteroid> GetAsteroidInstance();
 };
 
 

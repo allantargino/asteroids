@@ -11,6 +11,7 @@
 #include <iostream>
 #include <memory>
 #include "offmodel.h"
+#include "physics.h"
 
 class Model : public QOpenGLExtraFunctions {
 public:
