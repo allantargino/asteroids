@@ -13,7 +13,6 @@
 #include "asteroid.h"
 #include "offmodel.h"
 #include "modelfactory.h"
-#include "physics.h"
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
     Q_OBJECT

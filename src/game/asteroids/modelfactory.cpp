@@ -17,7 +17,8 @@ ModelFactory::ModelFactory(QOpenGLWidget* _glWidget)
 ModelFactory::~ModelFactory(){}
 
 std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
-    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel);
+    float size =  Physics::shipSize;
+    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel,size);
     ship->Create();
 
     ship->id = QUuid::createUuid().toString();
@@ -26,7 +27,8 @@ std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
 }
 
 std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
-    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel);
+    float size =  Physics::gunshotSize;
+    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size);
     gunshot->Create();
 
     float x= ship->atualPoint.x() + 0.05*cos((ship->angle + 90)* (3.1416/180));
@@ -40,7 +42,8 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
 }
 
 std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
-    auto asteroid = std::make_shared<Asteroid>(glWidget, gunshotOffModel);
+    float size = Physics::asteroidLSize;
+    auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, size);
     asteroid->Create();
 
     int choice = qrand() % 2;

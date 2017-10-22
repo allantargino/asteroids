@@ -37,14 +37,14 @@ void OpenGLWidget::paintGL()
     //Nave do jogador
     if (!ship)
         return;
-    ship->drawModel(Physics::shipSize);
+    ship->drawModel();
 
     //Tiros da nave
     QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
     while (i.hasNext()) {
         i.next();
         if(i.value())
-            i.value()->drawModel(Physics::gunshotSize);
+            i.value()->drawModel();
     }
 
     //Asteroids
@@ -52,7 +52,7 @@ void OpenGLWidget::paintGL()
     while (i_ast.hasNext()) {
         i_ast.next();
         if(i_ast.value())
-            i_ast.value()->drawModel(Physics::asteroidLSize);
+            i_ast.value()->drawModel();
     }
 
     //asteroid->drawModel(angle, x, y, z);
@@ -104,6 +104,9 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
 
 void OpenGLWidget::animate()
 {
+    if(!ship)
+        return;
+
     float elapsedTime = time.restart() / 1000.0f;
 
     //Gunshots
@@ -115,14 +118,33 @@ void OpenGLWidget::animate()
             auto gunshot = i.value();
 
             float xPos, yPos;
-            xPos= gunshot->atualPoint.x() + elapsedTime * 2 * cos((gunshot->angle + 90)* (3.1416/180));
-            yPos= gunshot->atualPoint.y() + elapsedTime * 2 * sin((gunshot->angle + 90)* (3.1416/180));
+            xPos= gunshot->atualPoint.x() + elapsedTime * 0.8 * cos((gunshot->angle + 90)* (3.1416/180));
+            yPos= gunshot->atualPoint.y() + elapsedTime * 0.8 * sin((gunshot->angle + 90)* (3.1416/180));
             gunshot->atualPoint =  QVector3D(xPos, yPos, 0);
+
 
             //Limits:
             if(qAbs(gunshot->atualPoint.x())>1.2 || qAbs(gunshot->atualPoint.y()) >1.2){
                 gunshots.remove(gunshot->id);
                 gunshot.reset();
+            }else{
+                //Points:
+                QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
+                while (i_ast.hasNext()) {
+                    i_ast.next();
+                    if(i_ast.value())
+                    {
+                        auto asteroid = i_ast.value();
+                        if(gunshot->CalculateColision(asteroid.get())){
+                            qDebug("Colision Detected!!");
+                            gunshots.remove(gunshot->id);
+                            gunshot.reset();
+                            asteroids.remove(asteroid->id);
+                            asteroid.reset();
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -145,6 +167,13 @@ void OpenGLWidget::animate()
             if(qAbs(asteroid->atualPoint.x())>1.4 || qAbs(asteroid->atualPoint.y()) >1.4){
                 asteroids.remove(asteroid->id);
                 asteroid.reset();
+            }else{
+                //Crash:
+                if(ship->CalculateColision(asteroid.get())){
+                    qDebug("Colision Detected!!");
+                    ship.reset();
+                    return;
+                }
             }
         }
     }

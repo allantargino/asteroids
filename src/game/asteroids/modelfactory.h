@@ -5,6 +5,7 @@
 #include "ship.h"
 #include "gunshot.h"
 #include "asteroid.h"
+#include "physics.h"
 
 class ModelFactory {
 public:

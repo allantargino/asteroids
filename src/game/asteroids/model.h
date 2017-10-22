@@ -15,7 +15,7 @@
 
 class Model : public QOpenGLExtraFunctions {
 public:
-    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel);
+    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale);
     ~Model();
 
     QOpenGLWidget* glWidget;
@@ -31,15 +31,18 @@ public:
     void createShaders();
     void destroyVBOs();
     void destroyShaders();
-    void drawModel(float scale);
+    void drawModel();
     void Create();
 
     QMatrix4x4 modelMatrix;
     QVector3D atualPoint;
 
     QString id;
-    int hitBoxRadius;
+    float scale;
+    float hitBoxRadius;
     float angle;
+
+    bool CalculateColision(Model* other);
 };
 
 #endif // MODEL_H

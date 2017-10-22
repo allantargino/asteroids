@@ -1,8 +1,6 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
-#include "model.h"
-
 class Physics {
 public:
     Physics();
@@ -18,7 +16,5 @@ public:
     static constexpr float asteroidMSize    = 0.2f;
     static constexpr float asteroidLSize    = 0.2f;
 
-
-    //bool CalculateColision(Model &A, Model &B);
 };
 #endif // PHYSICS_H
