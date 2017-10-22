@@ -11,6 +11,7 @@
 #include <iostream>
 #include <memory>
 #include "offmodel.h"
+#include "physics.h"
 
 class Model : public QOpenGLExtraFunctions {
 public:
@@ -30,12 +31,15 @@ public:
     void createShaders();
     void destroyVBOs();
     void destroyShaders();
-    void drawModel(float angle, float scale);
+    void drawModel(float scale);
     void Create();
 
     QMatrix4x4 modelMatrix;
     QVector3D atualPoint;
+
+    QString id;
     int hitBoxRadius;
+    float angle;
 };
 
 #endif // MODEL_H

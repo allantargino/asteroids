@@ -5,9 +5,10 @@ Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel)
     offModel = _offModel;
     glWidget = _glWidget;
 
-    glWidget->makeCurrent();
-
     this->atualPoint = QVector3D(0.0, 0.0, 0.0);
+    this->angle=0.0;
+
+    glWidget->makeCurrent();
 
     initializeOpenGLFunctions();
 }
@@ -148,7 +149,7 @@ void Model::createShaders()
     fs.close();
 }
 
-void Model::drawModel(float angle, float scale)
+void Model::drawModel(float scale)
 {
     modelMatrix.setToIdentity(); //M=I
     modelMatrix.translate(atualPoint);
