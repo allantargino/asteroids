@@ -9,8 +9,9 @@ public:
     static constexpr float shipSize       = 0.10f;
     static constexpr float shipMoveAngle  = 5.00f;
 
-    static constexpr float gunshotSize    = 0.02f;
+    static constexpr float shipLifeSize   = 0.05f;
 
+    static constexpr float gunshotSize    = 0.02f;
 
     static constexpr float asteroidSSize    = 0.2f;
     static constexpr float asteroidMSize    = 0.2f;

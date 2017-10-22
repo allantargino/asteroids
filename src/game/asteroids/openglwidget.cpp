@@ -5,6 +5,8 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
 {
     factory = std::make_unique<ModelFactory>(this);
 
+    lifeManager = std::make_unique<LifeManager>(factory.get());
+
     shotPlayer = new QMediaPlayer;
     shotPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\fire.wav"));
     shotPlayer->setVolume(100);
@@ -45,6 +47,13 @@ void OpenGLWidget::paintGL()
         return;
     ship->drawModel();
 
+    //Vidas do jogador
+    for (std::shared_ptr<Ship> &life : lifeManager->ships)
+    {
+        if(life)
+            life->drawModel();
+    }
+
     //Tiros da nave
     QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
     while (i.hasNext()) {
@@ -67,6 +76,8 @@ void OpenGLWidget::startGame()
     currentPoints = 0;
     emit updateCurrentPoints(currentPoints);
 
+    lifeManager->SetLifeCount(5);
+
     ship = factory->GetShipInstance();
 
     update();
@@ -87,6 +98,9 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
         break;
     case Qt::Key_Space:
     {
+        if(!ship)
+            return;
+
         auto gunshot = factory->GetGunshotInstance(ship.get());
         gunshots[gunshot->id] = gunshot;
 
@@ -178,9 +192,14 @@ void OpenGLWidget::animate()
             }else{
                 //Crash:
                 if(ship->CalculateColision(asteroid.get())){
-                    qDebug("Colision Detected!!");
-                    ship.reset();
-                    return;
+                    asteroids.remove(asteroid->id);
+                    asteroid.reset();
+
+                    lifeManager->DecreaseLifeCount();
+                    if(lifeManager->IsZero()){
+                        ship.reset();
+                        return;
+                    }
                 }
             }
         }

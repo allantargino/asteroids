@@ -18,7 +18,11 @@ ModelFactory::~ModelFactory(){}
 
 std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
     float size =  Physics::shipSize;
-    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel,size);
+    return GetScaledShipInstance(size);
+}
+
+std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
+    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, size);
     ship->Create();
 
     ship->id = QUuid::createUuid().toString();
@@ -26,7 +30,11 @@ std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
     return ship;
 }
 
+
 std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
+    if(!ship)
+        return nullptr;
+
     float size =  Physics::gunshotSize;
     std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size);
     gunshot->Create();

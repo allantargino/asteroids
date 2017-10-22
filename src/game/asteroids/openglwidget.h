@@ -13,6 +13,7 @@
 #include "asteroid.h"
 #include "offmodel.h"
 #include "modelfactory.h"
+#include "lifemanager.h"
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
     Q_OBJECT
@@ -26,6 +27,8 @@ public:
     QHash<QString, std::shared_ptr<Asteroid>> asteroids;
     //Model Factory:
     std::unique_ptr<ModelFactory> factory = nullptr;
+    //Life Manager:
+    std::unique_ptr<LifeManager> lifeManager = nullptr;
     //Animation:
     QTimer timer;
     QTime time;
