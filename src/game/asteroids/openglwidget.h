@@ -33,8 +33,11 @@ public:
     QTimer timer;
     QTime time;
     //Sounds:
+    QMediaPlayer* shipPlayer;
     QMediaPlayer* shotPlayer;
     QMediaPlayer* asteroidPlayer;
+
+    bool playing;
 
 protected:
     void initializeGL();
@@ -55,5 +58,6 @@ public slots:
 signals:
     void updateCurrentPoints(int points);
     void updateTopPoints(int points);
+    void updateGameText(QString text);
 };
 #endif // OPENGLWIDGET_H

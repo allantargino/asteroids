@@ -1,11 +1,14 @@
 #include "openglwidget.h"
 
-OpenGLWidget::OpenGLWidget(QWidget* parent)
-    : QOpenGLWidget(parent)
+OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
 {
     factory = std::make_unique<ModelFactory>(this);
 
     lifeManager = std::make_unique<LifeManager>(factory.get());
+
+    shipPlayer = new QMediaPlayer;
+    shipPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\bangLarge.wav"));
+    shipPlayer->setVolume(100);
 
     shotPlayer = new QMediaPlayer;
     shotPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\fire.wav"));
@@ -17,7 +20,10 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
 
     currentPoints = 0;
     topPoints=0;
+
+    playing = false;
 }
+
 void OpenGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -41,6 +47,9 @@ void OpenGLWidget::resizeGL(int w, int h)
 void OpenGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if(!playing)
+        return;
 
     //Nave do jogador
     if (!ship)
@@ -73,12 +82,16 @@ void OpenGLWidget::paintGL()
 
 void OpenGLWidget::startGame()
 {
+    emit updateGameText(QString(""));
+
     currentPoints = 0;
     emit updateCurrentPoints(currentPoints);
 
     lifeManager->SetLifeCount(5);
 
     ship = factory->GetShipInstance();
+
+    playing = true;
 
     update();
 }
@@ -98,7 +111,7 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
         break;
     case Qt::Key_Space:
     {
-        if(!ship)
+        if(!playing)
             return;
 
         auto gunshot = factory->GetGunshotInstance(ship.get());
@@ -124,7 +137,7 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
 
 void OpenGLWidget::animate()
 {
-    if(!ship)
+    if(!playing)
         return;
 
     float elapsedTime = time.restart() / 1000.0f;
@@ -171,7 +184,6 @@ void OpenGLWidget::animate()
         }
     }
 
-
     //Asteroids
     QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
     while (i_ast.hasNext()) {
@@ -192,12 +204,16 @@ void OpenGLWidget::animate()
             }else{
                 //Crash:
                 if(ship->CalculateColision(asteroid.get())){
+                    shipPlayer->play();
+
                     asteroids.remove(asteroid->id);
                     asteroid.reset();
 
                     lifeManager->DecreaseLifeCount();
                     if(lifeManager->IsZero()){
-                        ship.reset();
+                        playing = false;
+                        emit updateGameText(QString("GAME OVER"));
+                        update();
                         return;
                     }
                 }
@@ -215,5 +231,4 @@ void OpenGLWidget::increasePlayerScore(){
         topPoints = currentPoints;
         emit updateTopPoints(topPoints);
     }
-
 }

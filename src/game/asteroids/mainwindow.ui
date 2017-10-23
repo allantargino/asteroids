@@ -147,6 +147,65 @@
      <number>0</number>
     </property>
    </widget>
+   <widget class="QLabel" name="lblGameText">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>390</y>
+      <width>301</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="palette">
+     <palette>
+      <active>
+       <colorrole role="WindowText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </active>
+      <inactive>
+       <colorrole role="WindowText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </inactive>
+      <disabled>
+       <colorrole role="WindowText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>120</red>
+          <green>120</green>
+          <blue>120</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </disabled>
+     </palette>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>30</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>PRESS START</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
   <action name="actionOpen_File">
    <property name="text">
@@ -163,14 +222,8 @@
    <slots>
     <signal>updateCurrentPoints(int)</signal>
     <signal>updateTopPoints(int)</signal>
-    <signal>statusBarMessage(QString)</signal>
+    <signal>updateGameText(QString)</signal>
     <slot>startGame()</slot>
-    <slot>showFileOpenDialog()</slot>
-    <slot>loadSampleModel()</slot>
-    <slot>rotateObject(int)</slot>
-    <slot>AxisXChecked(bool)</slot>
-    <slot>AxisYChecked(bool)</slot>
-    <slot>AxisZChecked(bool)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -221,6 +274,22 @@
     <hint type="destinationlabel">
      <x>905</x>
      <y>630</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openGLWidget</sender>
+   <signal>updateGameText(QString)</signal>
+   <receiver>lblGameText</receiver>
+   <slot>setText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>329</x>
+     <y>439</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>330</x>
+     <y>420</y>
     </hint>
    </hints>
   </connection>
