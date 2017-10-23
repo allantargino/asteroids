@@ -5,7 +5,7 @@
 
 class Ship : public Model {
 public:
-    Ship(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel);
+    Ship(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale);
     ~Ship();
 
     void MoveLeft();

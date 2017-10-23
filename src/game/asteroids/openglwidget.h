@@ -13,7 +13,7 @@
 #include "asteroid.h"
 #include "offmodel.h"
 #include "modelfactory.h"
-#include "physics.h"
+#include "lifemanager.h"
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
     Q_OBJECT
@@ -27,11 +27,17 @@ public:
     QHash<QString, std::shared_ptr<Asteroid>> asteroids;
     //Model Factory:
     std::unique_ptr<ModelFactory> factory = nullptr;
+    //Life Manager:
+    std::unique_ptr<LifeManager> lifeManager = nullptr;
     //Animation:
     QTimer timer;
     QTime time;
     //Sounds:
-    QMediaPlayer* player;
+    QMediaPlayer* shipPlayer;
+    QMediaPlayer* shotPlayer;
+    QMediaPlayer* asteroidPlayer;
+
+    bool playing;
 
 protected:
     void initializeGL();
@@ -39,8 +45,19 @@ protected:
     void paintGL();
     void keyPressEvent(QKeyEvent* event);
 
+private:
+    int currentPoints;
+    int topPoints;
+
+    void increasePlayerScore();
+
 public slots:
-    void loadSampleModel();
+    void startGame();
     void animate();
+
+signals:
+    void updateCurrentPoints(int points);
+    void updateTopPoints(int points);
+    void updateGameText(QString text);
 };
 #endif // OPENGLWIDGET_H

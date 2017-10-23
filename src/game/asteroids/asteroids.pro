@@ -34,7 +34,8 @@ SOURCES += \
     offmodel.cpp \
     modelfactory.cpp \
     physics.cpp \
-    asteroid.cpp
+    asteroid.cpp \
+    lifemanager.cpp
         ship.cpp
 
 HEADERS += \
@@ -46,7 +47,8 @@ HEADERS += \
     offmodel.h \
     modelfactory.h \
     physics.h \
-    asteroid.h
+    asteroid.h \
+    lifemanager.h
 
 FORMS += \
         mainwindow.ui
