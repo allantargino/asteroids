@@ -82,6 +82,7 @@ void OpenGLWidget::paintGL()
 
 void OpenGLWidget::startGame()
 {
+    emit updateButtonEnable(false);
     emit updateGameText(QString(""));
 
     currentPoints = 0;
@@ -213,6 +214,7 @@ void OpenGLWidget::animate()
                     if(lifeManager->IsZero()){
                         playing = false;
                         emit updateGameText(QString("GAME OVER"));
+                        emit updateButtonEnable(true);
                         update();
                         return;
                     }
