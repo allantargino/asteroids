@@ -5,7 +5,7 @@
 
 class Asteroid : public Model {
 public:
-    Asteroid(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale);
+    Asteroid(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile);
     ~Asteroid();
 };
 

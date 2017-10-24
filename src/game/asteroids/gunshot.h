@@ -5,7 +5,7 @@
 
 class Gunshot : public Model {
 public:
-    Gunshot(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale);
+    Gunshot(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile);
     ~Gunshot();
 };
 

@@ -15,7 +15,7 @@
 
 class Model : public QOpenGLExtraFunctions {
 public:
-    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale);
+    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile);
     ~Model();
 
     QOpenGLWidget* glWidget;
@@ -26,6 +26,9 @@ public:
     GLuint vboVertices = 0;
     GLuint vboIndices = 0;
     GLuint shaderProgram = 0;
+
+    QString vertexShaderFile;
+    QString fragmentShaderFile;
 
     void createVBOs();
     void createShaders();

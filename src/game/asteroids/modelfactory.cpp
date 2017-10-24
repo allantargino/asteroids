@@ -22,7 +22,10 @@ std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
 }
 
 std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
-    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, size);
+    QString vertexShaderFile(":/shaders/vshader_default.glsl");
+    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
+
+    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, size, vertexShaderFile, fragmentShaderFile);
     ship->Create();
 
     ship->id = QUuid::createUuid().toString();
@@ -35,8 +38,11 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
     if(!ship)
         return nullptr;
 
+    QString vertexShaderFile(":/shaders/vshader_default.glsl");
+    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
+
     float size =  Physics::gunshotSize;
-    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size);
+    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size, vertexShaderFile, fragmentShaderFile);
     gunshot->Create();
 
     gunshot->currentPosition = Physics::GetNextLinearMoviment
@@ -55,11 +61,15 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
 }
 
 std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
+    QString vertexShaderFile(":/shaders/vshader_default.glsl");
+    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
+
     float HI = 2.0f;
     float LO = 0.5f;
     float factor = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
     float size = Physics::asteroidMSize * factor;
-    auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, size);
+
+    auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, size, vertexShaderFile, fragmentShaderFile);
     asteroid->Create();
 
     int choice = qrand() % 2;
