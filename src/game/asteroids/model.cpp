@@ -1,6 +1,6 @@
 #include "model.h"
 
-Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile)
+Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile, QVector3D _initialPosition)
 {
     offModel = _offModel;
     glWidget = _glWidget;
@@ -9,7 +9,10 @@ Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, flo
     fragmentShaderFile = _fragmentShaderFile;
 
     this->hitBoxRadius = this->offModel->invDiag*scale;
+
+    this->initialPosition = _initialPosition;
     this->currentPosition = QVector3D(0.0, 0.0, 0.0);
+
     this->angle=0.0;
 
     glWidget->makeCurrent();

@@ -15,7 +15,7 @@
 
 class Model : public QOpenGLExtraFunctions {
 public:
-    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile);
+    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile, QVector3D _initialPosition);
     ~Model();
 
     QOpenGLWidget* glWidget;
@@ -38,6 +38,8 @@ public:
     void Create();
 
     QMatrix4x4 modelMatrix;
+
+    QVector3D initialPosition;
     QVector3D currentPosition;
 
     QString id;

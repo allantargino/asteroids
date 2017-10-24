@@ -5,7 +5,7 @@
 
 class Ship : public Model {
 public:
-    Ship(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile);
+    Ship(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile, QVector3D _initialPosition);
     ~Ship();
 
     void MoveLeft();
