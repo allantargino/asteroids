@@ -20,8 +20,13 @@ void Ship::MoveRight(){
 
 void Ship::MoveUp(){
     if(this){
-        float x= this->atualPoint.x() + 0.05*cos((this->angle + 90)* (3.1416/180));
-        float y= this->atualPoint.y() + 0.05*sin((this->angle + 90)* (3.1416/180));
-        this->atualPoint = QVector3D(x, y, 0);
+        this->atualPoint = Physics::GetNextLinearMoviment
+                (
+                    this->atualPoint.x(),
+                    this->atualPoint.y(),
+                    this->angle,
+                    Physics::shipAngleCorrection,
+                    Physics::shipMovimentFactor
+                 );
     }
 }

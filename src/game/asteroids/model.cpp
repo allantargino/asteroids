@@ -164,6 +164,7 @@ void Model::drawModel()
 
     GLuint locModelMatrix = glGetUniformLocation(shaderProgram, "model");
     glUniformMatrix4fv(locModelMatrix, 1, GL_FALSE, modelMatrix.data());
+
     glDrawElements(GL_TRIANGLES, offModel->numFaces * 3, GL_UNSIGNED_INT, 0);
 }
 
@@ -172,6 +173,8 @@ void Model::Create()
     createShaders();
     createVBOs();
 }
+
+//Extra Functions:
 
 bool Model::CalculateColision(Model* other)
 {   

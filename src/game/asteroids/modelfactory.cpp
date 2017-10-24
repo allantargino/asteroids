@@ -39,18 +39,26 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
     std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size);
     gunshot->Create();
 
-    float x= ship->atualPoint.x() + 0.05*cos((ship->angle + 90)* (3.1416/180));
-    float y= ship->atualPoint.y() + 0.05*sin((ship->angle + 90)* (3.1416/180));
-    gunshot->atualPoint = QVector3D(x, y, 0);
-    gunshot->angle = ship->angle;
+    gunshot->atualPoint = Physics::GetNextLinearMoviment
+            (
+                ship->atualPoint.x(),
+                ship->atualPoint.y(),
+                ship->angle,
+                Physics::shipAngleCorrection,
+                Physics::shipMovimentFactor
+             );
 
+    gunshot->angle = ship->angle;
     gunshot->id = QUuid::createUuid().toString();
 
     return gunshot;
 }
 
 std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
-    float size = Physics::asteroidLSize;
+    float HI = 2.0f;
+    float LO = 0.5f;
+    float factor = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+    float size = Physics::asteroidMSize * factor;
     auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, size);
     asteroid->Create();
 
