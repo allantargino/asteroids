@@ -35,7 +35,7 @@ public:
     void Create();
 
     QMatrix4x4 modelMatrix;
-    QVector3D atualPoint;
+    QVector3D currentPosition;
 
     QString id;
     float scale;

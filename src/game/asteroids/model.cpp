@@ -7,7 +7,7 @@ Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, flo
     scale = _scale;
 
     this->hitBoxRadius = this->offModel->invDiag*scale;
-    this->atualPoint = QVector3D(0.0, 0.0, 0.0);
+    this->currentPosition = QVector3D(0.0, 0.0, 0.0);
     this->angle=0.0;
 
     glWidget->makeCurrent();
@@ -154,7 +154,7 @@ void Model::createShaders()
 void Model::drawModel()
 {
     modelMatrix.setToIdentity(); //M=I
-    modelMatrix.translate(atualPoint);
+    modelMatrix.translate(currentPosition);
     modelMatrix.rotate(angle, 0.0, 0.0, 1.0); // Rotação apenas em Z (plano XY)
     modelMatrix.scale(offModel->invDiag*scale, offModel->invDiag*scale, offModel->invDiag*scale); //M=I*S
     modelMatrix.translate(-offModel->midPoint); //M=I*S*T
@@ -164,6 +164,7 @@ void Model::drawModel()
 
     GLuint locModelMatrix = glGetUniformLocation(shaderProgram, "model");
     glUniformMatrix4fv(locModelMatrix, 1, GL_FALSE, modelMatrix.data());
+
     glDrawElements(GL_TRIANGLES, offModel->numFaces * 3, GL_UNSIGNED_INT, 0);
 }
 
@@ -173,8 +174,10 @@ void Model::Create()
     createVBOs();
 }
 
+//Extra Functions:
+
 bool Model::CalculateColision(Model* other)
 {   
-    float distance = this->atualPoint.distanceToPoint(other->atualPoint);
+    float distance = this->currentPosition.distanceToPoint(other->currentPosition);
     return distance < (this->hitBoxRadius + other->hitBoxRadius);
 }

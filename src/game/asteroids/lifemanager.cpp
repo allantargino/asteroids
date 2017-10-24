@@ -13,7 +13,7 @@ void LifeManager::IncreaseLifeCount(){
 
     float size = Physics::shipLifeSize;
     auto ship = factory->GetScaledShipInstance(size);
-    ship->atualPoint = lastPosition;
+    ship->currentPosition = lastPosition;
     ships.push_back(ship);
 }
 

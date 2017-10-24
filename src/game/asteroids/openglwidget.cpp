@@ -18,7 +18,7 @@ OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
     asteroidPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\bangSmall.wav"));
     asteroidPlayer->setVolume(100);
 
-    currentPoints = 0;
+    currentScore = 0;
     topPoints=0;
 
     playing = false;
@@ -85,8 +85,8 @@ void OpenGLWidget::startGame()
     emit updateButtonEnable(false);
     emit updateGameText(QString(""));
 
-    currentPoints = 0;
-    emit updateCurrentPoints(currentPoints);
+    currentScore = 0;
+    emit updateCurrentScore(currentScore);
 
     lifeManager->SetLifeCount(5);
 
@@ -151,14 +151,18 @@ void OpenGLWidget::animate()
         {
             auto gunshot = i.value();
 
-            float xPos, yPos;
-            xPos= gunshot->atualPoint.x() + elapsedTime * 0.8 * cos((gunshot->angle + 90)* (3.1416/180));
-            yPos= gunshot->atualPoint.y() + elapsedTime * 0.8 * sin((gunshot->angle + 90)* (3.1416/180));
-            gunshot->atualPoint =  QVector3D(xPos, yPos, 0);
+            gunshot->currentPosition = Physics::GetNextLinearMoviment
+                    (
+                        gunshot->currentPosition.x(),
+                        gunshot->currentPosition.y(),
+                        gunshot->angle,
+                        Physics::gunshotAngleCorrection,
+                        Physics::gunshotMovimentFactor * elapsedTime
+                     );
 
 
             //Limits:
-            if(qAbs(gunshot->atualPoint.x())>1.2 || qAbs(gunshot->atualPoint.y()) >1.2){
+            if(qAbs(gunshot->currentPosition.x())>1.2 || qAbs(gunshot->currentPosition.y()) >1.2){
                 gunshots.remove(gunshot->id);
                 gunshot.reset();
             }else{
@@ -193,13 +197,17 @@ void OpenGLWidget::animate()
         {
             auto asteroid = i_ast.value();
 
-            float xPos, yPos;
-            xPos= asteroid->atualPoint.x() + elapsedTime * 0.5 * cos((asteroid->angle)* (3.1416/180));
-            yPos= asteroid->atualPoint.y() + elapsedTime * 0.5 * sin((asteroid->angle)* (3.1416/180));
-            asteroid->atualPoint =  QVector3D(xPos, yPos, 0);
+            asteroid->currentPosition = Physics::GetNextLinearMoviment
+                    (
+                        asteroid->currentPosition.x(),
+                        asteroid->currentPosition.y(),
+                        asteroid->angle,
+                        Physics::asteroidAngleCorrection,
+                        Physics::asteroidMovimentFactor * elapsedTime
+                     );
 
             //Limits:
-            if(qAbs(asteroid->atualPoint.x())>1.4 || qAbs(asteroid->atualPoint.y()) >1.4){
+            if(qAbs(asteroid->currentPosition.x())>1.4 || qAbs(asteroid->currentPosition.y()) >1.4){
                 asteroids.remove(asteroid->id);
                 asteroid.reset();
             }else{
@@ -227,10 +235,10 @@ void OpenGLWidget::animate()
 }
 
 void OpenGLWidget::increasePlayerScore(){
-    currentPoints++;
-    emit updateCurrentPoints(currentPoints);
-    if(currentPoints>topPoints){
-        topPoints = currentPoints;
+    currentScore++;
+    emit updateCurrentScore(currentScore);
+    if(currentScore>topPoints){
+        topPoints = currentScore;
         emit updateTopPoints(topPoints);
     }
 }
