@@ -29,7 +29,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/imgs/background.png);</string>
+   <string notr="true">background-image: url(:/imgs/background.jpg);</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="OpenGLWidget" name="openGLWidget">
