@@ -21,6 +21,14 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
 public:
     //OpenGL:
     OpenGLWidget(QWidget* parent = 0);
+
+protected:
+    void initializeGL();
+    void resizeGL(int width, int height);
+    void paintGL();
+    void keyPressEvent(QKeyEvent* event);
+
+private:
     //Models:
     std::shared_ptr<Ship> ship = nullptr;
     QHash<QString, std::shared_ptr<Gunshot>> gunshots;
@@ -36,16 +44,8 @@ public:
     QMediaPlayer* shipPlayer;
     QMediaPlayer* shotPlayer;
     QMediaPlayer* asteroidPlayer;
-
+    //Control:
     bool playing;
-
-protected:
-    void initializeGL();
-    void resizeGL(int width, int height);
-    void paintGL();
-    void keyPressEvent(QKeyEvent* event);
-
-private:
     int currentPoints;
     int topPoints;
 
@@ -59,5 +59,6 @@ signals:
     void updateCurrentPoints(int points);
     void updateTopPoints(int points);
     void updateGameText(QString text);
+    void updateButtonEnable(bool value);
 };
 #endif // OPENGLWIDGET_H
