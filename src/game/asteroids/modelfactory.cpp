@@ -66,7 +66,7 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
 }
 
 std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
-    QString vertexShaderFile(":/shaders/vshader_default.glsl");
+    QString vertexShaderFile(":/shaders/vshader_energy.glsl");
     QString fragmentShaderFile(":/shaders/fshader_default.glsl");
 
     float HI = 2.0f;

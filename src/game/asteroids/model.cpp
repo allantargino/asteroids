@@ -168,6 +168,9 @@ void Model::drawModel()
     GLuint locModelMatrix = glGetUniformLocation(shaderProgram, "model");
     glUniformMatrix4fv(locModelMatrix, 1, GL_FALSE, modelMatrix.data());
 
+    GLuint locColor = glGetUniformLocation(shaderProgram, "color");
+    glUniform1f(locColor, 0.5f);
+
     glDrawElements(GL_TRIANGLES, offModel->numFaces * 3, GL_UNSIGNED_INT, 0);
 }
 
