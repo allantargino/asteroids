@@ -20,10 +20,10 @@ void Ship::MoveRight(){
 
 void Ship::MoveUp(){
     if(this){
-        this->atualPoint = Physics::GetNextLinearMoviment
+        this->currentPosition = Physics::GetNextLinearMoviment
                 (
-                    this->atualPoint.x(),
-                    this->atualPoint.y(),
+                    this->currentPosition.x(),
+                    this->currentPosition.y(),
                     this->angle,
                     Physics::shipAngleCorrection,
                     Physics::shipMovimentFactor

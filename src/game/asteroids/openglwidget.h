@@ -46,7 +46,7 @@ private:
     QMediaPlayer* asteroidPlayer;
     //Control:
     bool playing;
-    int currentPoints;
+    int currentScore;
     int topPoints;
 
     void increasePlayerScore();
@@ -56,7 +56,7 @@ public slots:
     void animate();
 
 signals:
-    void updateCurrentPoints(int points);
+    void updateCurrentScore(int points);
     void updateTopPoints(int points);
     void updateGameText(QString text);
     void updateButtonEnable(bool value);

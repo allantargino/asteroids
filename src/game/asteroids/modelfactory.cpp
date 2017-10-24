@@ -39,10 +39,10 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
     std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size);
     gunshot->Create();
 
-    gunshot->atualPoint = Physics::GetNextLinearMoviment
+    gunshot->currentPosition = Physics::GetNextLinearMoviment
             (
-                ship->atualPoint.x(),
-                ship->atualPoint.y(),
+                ship->currentPosition.x(),
+                ship->currentPosition.y(),
                 ship->angle,
                 Physics::shipAngleCorrection,
                 Physics::shipMovimentFactor
@@ -94,7 +94,7 @@ std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
     //Random angle
     angle += angleChoice * AngleSignalChoice;
 
-    asteroid->atualPoint = initPoint;
+    asteroid->currentPosition = initPoint;
     asteroid->angle = angle;
 
     asteroid->id = QUuid::createUuid().toString();

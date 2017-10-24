@@ -20,11 +20,15 @@ public:
 
     //Gunshot
     static constexpr float gunshotSize      =   0.02f;
+    static constexpr float gunshotAngleCorrection  =   90.00f; //degrees
+    static constexpr float gunshotMovimentFactor   =    0.80f;
 
     //Asteroid
     static constexpr float asteroidSSize    = 0.10f;
     static constexpr float asteroidMSize    = 0.15f;
     static constexpr float asteroidLSize    = 0.20f;
+    static constexpr float asteroidAngleCorrection  =   0.00f; //degrees
+    static constexpr float asteroidMovimentFactor   =    0.50f;
 
 
     //Functions

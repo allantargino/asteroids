@@ -243,10 +243,10 @@ color: rgb(255, 255, 255);</string>
    <extends>QOpenGLWidget</extends>
    <header>openglwidget.h</header>
    <slots>
-    <signal>updateCurrentPoints(int)</signal>
     <signal>updateTopPoints(int)</signal>
     <signal>updateGameText(QString)</signal>
     <signal>updateButtonEnable(bool)</signal>
+    <signal>updateCurrentScore(int)</signal>
     <slot>startGame()</slot>
    </slots>
   </customwidget>
@@ -271,7 +271,7 @@ color: rgb(255, 255, 255);</string>
   </connection>
   <connection>
    <sender>openGLWidget</sender>
-   <signal>updateCurrentPoints(int)</signal>
+   <signal>updateCurrentScore(int)</signal>
    <receiver>counter_current</receiver>
    <slot>display(int)</slot>
    <hints>
