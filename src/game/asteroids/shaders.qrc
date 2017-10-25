@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/shaders">
-        <file>fshader1.glsl</file>
-        <file>vshader1.glsl</file>
+        <file>fshader_default.glsl</file>
+        <file>vshader_gray_scale_y.glsl</file>
+        <file>vshader_default.glsl</file>
+        <file>vshader_energy.glsl</file>
     </qresource>
 </RCC>

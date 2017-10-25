@@ -48,8 +48,11 @@ private:
     bool playing;
     int currentScore;
     int topPoints;
+    int level;
+    float tempTime;
 
     void increasePlayerScore();
+    void setGameOver();
 
 public slots:
     void startGame();
@@ -60,5 +63,6 @@ signals:
     void updateTopPoints(int points);
     void updateGameText(QString text);
     void updateButtonEnable(bool value);
+    void updateLevel(QString text);
 };
 #endif // OPENGLWIDGET_H

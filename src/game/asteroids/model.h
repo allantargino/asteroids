@@ -15,7 +15,7 @@
 
 class Model : public QOpenGLExtraFunctions {
 public:
-    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale);
+    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile, QVector3D _initialPosition);
     ~Model();
 
     QOpenGLWidget* glWidget;
@@ -27,20 +27,29 @@ public:
     GLuint vboIndices = 0;
     GLuint shaderProgram = 0;
 
+    QString vertexShaderFile;
+    QString fragmentShaderFile;
+
     void createVBOs();
     void createShaders();
     void destroyVBOs();
     void destroyShaders();
+
     void drawModel();
+    void drawModel(float arg);
+
     void Create();
 
     QMatrix4x4 modelMatrix;
+
+    QVector3D initialPosition;
     QVector3D currentPosition;
 
     QString id;
     float scale;
     float hitBoxRadius;
     float angle;
+    float color;
 
     bool CalculateColision(Model* other);
 };

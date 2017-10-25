@@ -1,14 +1,20 @@
 #include "model.h"
 
-Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, float _scale)
+Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile, QVector3D _initialPosition)
 {
     offModel = _offModel;
     glWidget = _glWidget;
     scale = _scale;
+    vertexShaderFile = _vertexShaderFile;
+    fragmentShaderFile = _fragmentShaderFile;
 
     this->hitBoxRadius = this->offModel->invDiag*scale;
+
+    this->initialPosition = _initialPosition;
     this->currentPosition = QVector3D(0.0, 0.0, 0.0);
+
     this->angle=0.0;
+    this->color=1.0;
 
     glWidget->makeCurrent();
 
@@ -60,8 +66,6 @@ void Model::createShaders()
 {
     // makeCurrent ();
     destroyShaders();
-    QString vertexShaderFile(":/shaders/vshader1.glsl");
-    QString fragmentShaderFile(":/shaders/fshader1.glsl");
 
     QFile vs(vertexShaderFile);
     QFile fs(fragmentShaderFile);
@@ -164,6 +168,9 @@ void Model::drawModel()
 
     GLuint locModelMatrix = glGetUniformLocation(shaderProgram, "model");
     glUniformMatrix4fv(locModelMatrix, 1, GL_FALSE, modelMatrix.data());
+
+    GLuint locColor = glGetUniformLocation(shaderProgram, "color");
+    glUniform1f(locColor, color);
 
     glDrawElements(GL_TRIANGLES, offModel->numFaces * 3, GL_UNSIGNED_INT, 0);
 }

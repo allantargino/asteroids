@@ -20,6 +20,8 @@ OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
 
     currentScore = 0;
     topPoints=0;
+    level=0;
+    tempTime = 0.0f;
 
     playing = false;
 }
@@ -88,6 +90,9 @@ void OpenGLWidget::startGame()
     currentScore = 0;
     emit updateCurrentScore(currentScore);
 
+    level = 1;
+    emit updateLevel(QString("Fase: %1").arg(level));
+
     lifeManager->SetLifeCount(5);
 
     ship = factory->GetShipInstance();
@@ -118,7 +123,7 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
         auto gunshot = factory->GetGunshotInstance(ship.get());
         gunshots[gunshot->id] = gunshot;
 
-        shotPlayer->play();
+        //shotPlayer->play();
     }
         break;
     case Qt::Key_A:
@@ -143,7 +148,7 @@ void OpenGLWidget::animate()
 
     float elapsedTime = time.restart() / 1000.0f;
 
-    //Gunshots
+    //Gunshots Colisions and Limits
     QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
     while (i.hasNext()) {
         i.next();
@@ -151,6 +156,7 @@ void OpenGLWidget::animate()
         {
             auto gunshot = i.value();
 
+            //Position
             gunshot->currentPosition = Physics::GetNextLinearMoviment
                     (
                         gunshot->currentPosition.x(),
@@ -159,6 +165,10 @@ void OpenGLWidget::animate()
                         Physics::gunshotAngleCorrection,
                         Physics::gunshotMovimentFactor * elapsedTime
                      );
+
+            //Color
+            float dist = (gunshot->currentPosition.distanceToPoint(gunshot->initialPosition))/2.0f;
+            gunshot->color = 1.0 - dist;
 
 
             //Limits:
@@ -189,7 +199,7 @@ void OpenGLWidget::animate()
         }
     }
 
-    //Asteroids
+    //Asteroids Colisions and Limits
     QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
     while (i_ast.hasNext()) {
         i_ast.next();
@@ -220,9 +230,7 @@ void OpenGLWidget::animate()
 
                     lifeManager->DecreaseLifeCount();
                     if(lifeManager->IsZero()){
-                        playing = false;
-                        emit updateGameText(QString("GAME OVER"));
-                        emit updateButtonEnable(true);
+                        setGameOver();
                         update();
                         return;
                     }
@@ -231,14 +239,38 @@ void OpenGLWidget::animate()
         }
     }
 
+    //New Asteroids
+    tempTime += elapsedTime;
+    float asteroidTime = 2.0f / level;
+    float launchTime = tempTime / asteroidTime;
+    if(launchTime > 1){
+        tempTime = 0;
+        auto asteroid = factory->GetAsteroidInstance();
+        asteroids[asteroid->id] = asteroid;
+    }
+
     update();
 }
 
 void OpenGLWidget::increasePlayerScore(){
+    //Current Score
     currentScore++;
     emit updateCurrentScore(currentScore);
+
+    //Top Score
     if(currentScore>topPoints){
         topPoints = currentScore;
         emit updateTopPoints(topPoints);
     }
+
+    //Level
+    level = currentScore / 10 + 1;
+    emit updateLevel(QString("Fase: %1").arg(level));
+}
+
+void OpenGLWidget::setGameOver(){
+    playing = false;
+    emit updateGameText(QString("GAME OVER"));
+    emit updateButtonEnable(true);
+    emit updateLevel("");
 }
