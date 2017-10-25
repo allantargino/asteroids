@@ -148,7 +148,7 @@ void OpenGLWidget::animate()
 
     float elapsedTime = time.restart() / 1000.0f;
 
-    //Gunshots
+    //Gunshots Colisions and Limits
     QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
     while (i.hasNext()) {
         i.next();
@@ -156,6 +156,7 @@ void OpenGLWidget::animate()
         {
             auto gunshot = i.value();
 
+            //Position
             gunshot->currentPosition = Physics::GetNextLinearMoviment
                     (
                         gunshot->currentPosition.x(),
@@ -164,6 +165,10 @@ void OpenGLWidget::animate()
                         Physics::gunshotAngleCorrection,
                         Physics::gunshotMovimentFactor * elapsedTime
                      );
+
+            //Color
+            float dist = (gunshot->currentPosition.distanceToPoint(gunshot->initialPosition))/2.0f;
+            gunshot->color = 1.0 - dist;
 
 
             //Limits:
@@ -194,7 +199,7 @@ void OpenGLWidget::animate()
         }
     }
 
-    //Asteroids
+    //Asteroids Colisions and Limits
     QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
     while (i_ast.hasNext()) {
         i_ast.next();
@@ -243,7 +248,6 @@ void OpenGLWidget::animate()
         auto asteroid = factory->GetAsteroidInstance();
         asteroids[asteroid->id] = asteroid;
     }
-
 
     update();
 }

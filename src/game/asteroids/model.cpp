@@ -14,6 +14,7 @@ Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, flo
     this->currentPosition = QVector3D(0.0, 0.0, 0.0);
 
     this->angle=0.0;
+    this->color=1.0;
 
     glWidget->makeCurrent();
 
