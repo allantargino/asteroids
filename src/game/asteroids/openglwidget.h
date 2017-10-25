@@ -49,9 +49,10 @@ private:
     int currentScore;
     int topPoints;
     int level;
-    float asteroidTime;
+    float tempTime;
 
     void increasePlayerScore();
+    void setGameOver();
 
 public slots:
     void startGame();

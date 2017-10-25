@@ -21,6 +21,7 @@ OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
     currentScore = 0;
     topPoints=0;
     level=0;
+    tempTime = 0.0f;
 
     playing = false;
 }
@@ -224,9 +225,7 @@ void OpenGLWidget::animate()
 
                     lifeManager->DecreaseLifeCount();
                     if(lifeManager->IsZero()){
-                        playing = false;
-                        emit updateGameText(QString("GAME OVER"));
-                        emit updateButtonEnable(true);
+                        setGameOver();
                         update();
                         return;
                     }
@@ -234,6 +233,17 @@ void OpenGLWidget::animate()
             }
         }
     }
+
+    //New Asteroids
+    tempTime += elapsedTime;
+    float asteroidTime = 2.0f / level;
+    float launchTime = tempTime / asteroidTime;
+    if(launchTime > 1){
+        tempTime = 0;
+        auto asteroid = factory->GetAsteroidInstance();
+        asteroids[asteroid->id] = asteroid;
+    }
+
 
     update();
 }
@@ -252,4 +262,11 @@ void OpenGLWidget::increasePlayerScore(){
     //Level
     level = currentScore / 10 + 1;
     emit updateLevel(QString("Fase: %1").arg(level));
+}
+
+void OpenGLWidget::setGameOver(){
+    playing = false;
+    emit updateGameText(QString("GAME OVER"));
+    emit updateButtonEnable(true);
+    emit updateLevel("");
 }
