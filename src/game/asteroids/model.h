@@ -34,7 +34,10 @@ public:
     void createShaders();
     void destroyVBOs();
     void destroyShaders();
+
     void drawModel();
+    void drawModel(float arg);
+
     void Create();
 
     QMatrix4x4 modelMatrix;
@@ -46,6 +49,7 @@ public:
     float scale;
     float hitBoxRadius;
     float angle;
+    float color;
 
     bool CalculateColision(Model* other);
 };

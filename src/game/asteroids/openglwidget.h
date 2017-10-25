@@ -48,6 +48,8 @@ private:
     bool playing;
     int currentScore;
     int topPoints;
+    int level;
+    float asteroidTime;
 
     void increasePlayerScore();
 
@@ -60,5 +62,6 @@ signals:
     void updateTopPoints(int points);
     void updateGameText(QString text);
     void updateButtonEnable(bool value);
+    void updateLevel(QString text);
 };
 #endif // OPENGLWIDGET_H

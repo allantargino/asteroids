@@ -111,6 +111,7 @@ std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
 
     asteroid->currentPosition = initPoint;
     asteroid->angle = angle;
+    asteroid->color = 0.5f;
 
     asteroid->id = QUuid::createUuid().toString();
 

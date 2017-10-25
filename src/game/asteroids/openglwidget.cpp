@@ -20,6 +20,7 @@ OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
 
     currentScore = 0;
     topPoints=0;
+    level=0;
 
     playing = false;
 }
@@ -87,6 +88,9 @@ void OpenGLWidget::startGame()
 
     currentScore = 0;
     emit updateCurrentScore(currentScore);
+
+    level = 1;
+    emit updateLevel(QString("Fase: %1").arg(level));
 
     lifeManager->SetLifeCount(5);
 
@@ -235,10 +239,17 @@ void OpenGLWidget::animate()
 }
 
 void OpenGLWidget::increasePlayerScore(){
+    //Current Score
     currentScore++;
     emit updateCurrentScore(currentScore);
+
+    //Top Score
     if(currentScore>topPoints){
         topPoints = currentScore;
         emit updateTopPoints(topPoints);
     }
+
+    //Level
+    level = currentScore / 10 + 1;
+    emit updateLevel(QString("Fase: %1").arg(level));
 }

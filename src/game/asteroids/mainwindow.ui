@@ -229,6 +229,29 @@ color: rgb(255, 255, 255);</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QLabel" name="lblLevel">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>150</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+background-image: url();</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <action name="actionOpen_File">
    <property name="text">
@@ -247,6 +270,7 @@ color: rgb(255, 255, 255);</string>
     <signal>updateGameText(QString)</signal>
     <signal>updateButtonEnable(bool)</signal>
     <signal>updateCurrentScore(int)</signal>
+    <signal>updateLevel(QString)</signal>
     <slot>startGame()</slot>
    </slots>
   </customwidget>
@@ -330,6 +354,22 @@ color: rgb(255, 255, 255);</string>
     <hint type="destinationlabel">
      <x>820</x>
      <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openGLWidget</sender>
+   <signal>updateLevel(QString)</signal>
+   <receiver>lblLevel</receiver>
+   <slot>setText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>329</x>
+     <y>439</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>567</x>
+     <y>157</y>
     </hint>
    </hints>
   </connection>
