@@ -84,6 +84,9 @@ void OpenGLWidget::paintGL()
 
 void OpenGLWidget::startGame()
 {
+    factory->LoadInstances();
+
+
     emit updateButtonEnable(false);
     emit updateGameText(QString(""));
 
@@ -123,7 +126,7 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
         auto gunshot = factory->GetGunshotInstance(ship.get());
         gunshots[gunshot->id] = gunshot;
 
-        //shotPlayer->play();
+        shotPlayer->play();
     }
         break;
     case Qt::Key_A:
@@ -176,7 +179,7 @@ void OpenGLWidget::animate()
                 gunshots.remove(gunshot->id);
                 gunshot.reset();
             }else{
-                //Points:
+                //Score:
                 QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
                 while (i_ast.hasNext()) {
                     i_ast.next();
@@ -189,8 +192,10 @@ void OpenGLWidget::animate()
                             increasePlayerScore();
                             gunshots.remove(gunshot->id);
                             gunshot.reset();
+
                             asteroids.remove(asteroid->id);
-                            asteroid.reset();
+                            factory->RemoveAsteroidInstance(asteroid);
+
                             break;
                         }
                     }
@@ -226,7 +231,7 @@ void OpenGLWidget::animate()
                     shipPlayer->play();
 
                     asteroids.remove(asteroid->id);
-                    asteroid.reset();
+                    factory->RemoveAsteroidInstance(asteroid);
 
                     lifeManager->DecreaseLifeCount();
                     if(lifeManager->IsZero()){

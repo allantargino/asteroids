@@ -35,7 +35,6 @@ std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
     return ship;
 }
 
-
 std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
     if(!ship)
         return nullptr;
@@ -66,6 +65,29 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
 }
 
 std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
+    auto asteroid = AsteroidQueue.dequeue();
+    asteroid->currentPosition = asteroid->initialPosition;
+
+    return asteroid;
+}
+
+void ModelFactory::RemoveAsteroidInstance(std::shared_ptr<Asteroid> asteroid){
+    AsteroidQueue.enqueue(asteroid);
+}
+
+
+void ModelFactory::LoadInstances(){
+    LoadAsteroidInstances();
+}
+
+void ModelFactory::LoadAsteroidInstances(){
+    for (int i = 0; i < 100; ++i) {
+        auto asteroid = CreateAsteroidInstance();
+        AsteroidQueue.enqueue(asteroid);
+    }
+}
+
+std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
     QString vertexShaderFile(":/shaders/vshader_default.glsl");
     QString fragmentShaderFile(":/shaders/fshader_default.glsl");
 
@@ -109,6 +131,7 @@ std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
     auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, size, vertexShaderFile, fragmentShaderFile, initPoint);
     asteroid->Create();
 
+    asteroid->initialPosition = initPoint;
     asteroid->currentPosition = initPoint;
     asteroid->angle = angle;
     asteroid->color = 0.5f;

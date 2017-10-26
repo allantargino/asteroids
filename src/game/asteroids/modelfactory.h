@@ -2,6 +2,7 @@
 #define MODELFACTORY_H
 
 #include <QUuid>
+#include <QQueue>
 #include "ship.h"
 #include "gunshot.h"
 #include "asteroid.h"
@@ -22,6 +23,21 @@ public:
     std::shared_ptr<Ship> GetScaledShipInstance(float size);
     std::shared_ptr<Gunshot> GetGunshotInstance(Ship* ship);
     std::shared_ptr<Asteroid> GetAsteroidInstance();
+
+    void RemoveAsteroidInstance(std::shared_ptr<Asteroid>);
+    void RemoveGunshotInstance(std::shared_ptr<Gunshot>);
+
+    void LoadInstances();
+
+
+private:
+    QQueue<std::shared_ptr<Asteroid>> AsteroidQueue;
+
+    std::shared_ptr<Asteroid> CreateAsteroidInstance();
+    std::shared_ptr<Gunshot> CreateGunshotInstance();
+
+    void LoadAsteroidInstances();
+    void LoadGunshotInstances();
 };
 
 
