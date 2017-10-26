@@ -66,7 +66,46 @@ std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
     auto asteroid = AsteroidQueue.dequeue();
     asteroid->currentPosition = asteroid->initialPosition;
 
+    asteroid->isFragment = false;
+
     return asteroid;
+}
+
+std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(QVector3D initPosition, float fatherSize){
+
+    std::vector<std::shared_ptr<Asteroid>> fragments;
+
+    //Number of fragments
+    int n = (qrand() % 4) + 3; //From 3 to 6 [3, 4, 5, 6]
+
+    //Angle
+    float HI = 90.0f;
+    float LO = 0.0f;
+    float angle = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+
+    //Step
+    float step = 360.0f / n;
+
+    //Size
+    float size = fatherSize / n;
+
+    for (int i = 0; i < n; ++i) {
+        auto asteroid = AsteroidQueue.dequeue();
+        asteroid->isFragment = true;
+
+        //Position
+        asteroid->initialPosition = initPosition;
+        asteroid->currentPosition = initPosition;
+
+        asteroid->angle = angle + step * i;
+
+        asteroid->scale = size;
+        asteroid->speed  = Physics::asteroidMovimentFactor * 0.5;
+
+        fragments.push_back(asteroid);
+    }
+
+    return fragments;
 }
 
 
@@ -99,7 +138,7 @@ void ModelFactory::LoadInstances(){
 }
 
 void ModelFactory::LoadAsteroidInstances(){
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 250; ++i) {
         auto asteroid = CreateAsteroidInstance();
         AsteroidQueue.enqueue(asteroid);
     }
@@ -157,7 +196,6 @@ std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
     asteroid->initialPosition = initPoint;
     asteroid->currentPosition = initPoint;
     asteroid->angle = angle;
-    asteroid->color = 0.5f;
 
     asteroid->id = QUuid::createUuid().toString();
 
