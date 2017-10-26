@@ -1,12 +1,12 @@
 #include "model.h"
 
-Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, float _scale, QString _vertexShaderFile, QString _fragmentShaderFile, QVector3D _initialPosition)
+Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, GLuint _shaderProgram, float _scale, QVector3D _initialPosition)
 {
-    offModel = _offModel;
     glWidget = _glWidget;
+    offModel = _offModel;
+    shaderProgram = _shaderProgram;
+
     scale = _scale;
-    vertexShaderFile = _vertexShaderFile;
-    fragmentShaderFile = _fragmentShaderFile;
 
     this->hitBoxRadius = this->offModel->invDiag*scale;
 
@@ -23,7 +23,6 @@ Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, flo
 Model::~Model()
 {
     destroyVBOs();
-    destroyShaders();
 }
 
 void Model::destroyVBOs()
@@ -34,11 +33,6 @@ void Model::destroyVBOs()
     vboVertices = 0;
     vboIndices = 0;
     vao = 0;
-}
-
-void Model::destroyShaders()
-{
-    glDeleteProgram(shaderProgram);
 }
 
 void Model::createVBOs()
@@ -60,99 +54,6 @@ void Model::createVBOs()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, offModel->numFaces * 3 * sizeof(
                                                              unsigned int),
         offModel->indices.get(), GL_STATIC_DRAW);
-}
-
-void Model::createShaders()
-{
-    // makeCurrent ();
-    destroyShaders();
-
-    QFile vs(vertexShaderFile);
-    QFile fs(fragmentShaderFile);
-
-    vs.open(QFile::ReadOnly | QFile::Text);
-    fs.open(QFile::ReadOnly | QFile::Text);
-
-    QTextStream streamVs(&vs), streamFs(&fs);
-
-    QString qtStringVs = streamVs.readAll();
-    QString qtStringFs = streamFs.readAll();
-
-    std::string stdStringVs = qtStringVs.toStdString();
-    std::string stdStringFs = qtStringFs.toStdString();
-
-    // Create an empty vertex shader handle
-    GLuint vertexShader = 0;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    // Send the vertex shader source code to GL
-    const GLchar* source = stdStringVs.c_str();
-    glShaderSource(vertexShader, 1, &source, 0);
-    // Compile the vertex shader
-    glCompileShader(vertexShader);
-    GLint isCompiled = 0;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE) {
-        GLint maxLength = 0;
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-        qDebug("%s", &infoLog[0]);
-        glDeleteShader(vertexShader);
-        return;
-    }
-
-    // Create an empty fragment shader handle
-    GLuint fragmentShader = 0;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    // Send the fragment shader source code to GL
-    // Note that std :: string ’s . c_str is NULL character terminated.
-    source = stdStringFs.c_str();
-    glShaderSource(fragmentShader, 1, &source, 0);
-    // Compile the fragment shader
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE) {
-        GLint maxLength = 0;
-        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-        std::vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(fragmentShader, maxLength, &maxLength,
-            &infoLog[0]);
-        qDebug("%s", &infoLog[0]);
-        glDeleteShader(fragmentShader);
-        glDeleteShader(vertexShader);
-        return;
-    }
-
-    shaderProgram = glCreateProgram();
-    // Attach our shaders to our program
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    // Link our program
-    glLinkProgram(shaderProgram);
-    // Note the different functions here : glGetProgram * instead of glGetShader *.
-    GLint isLinked = 0;
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, (int*)&isLinked);
-    if (isLinked == GL_FALSE) {
-        GLint maxLength = 0;
-        glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetProgramInfoLog(shaderProgram, maxLength, &maxLength,
-            &infoLog[0]);
-        qDebug("%s", &infoLog[0]);
-        glDeleteProgram(shaderProgram);
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        return;
-    }
-
-    glDetachShader(shaderProgram, vertexShader);
-    glDetachShader(shaderProgram, fragmentShader);
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    vs.close();
-    fs.close();
 }
 
 void Model::drawModel()
@@ -177,7 +78,6 @@ void Model::drawModel()
 
 void Model::Create()
 {
-    createShaders();
     createVBOs();
 }
 

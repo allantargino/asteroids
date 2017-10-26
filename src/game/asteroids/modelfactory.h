@@ -8,12 +8,18 @@
 #include "asteroid.h"
 #include "physics.h"
 
-class ModelFactory {
+class ModelFactory : public QOpenGLExtraFunctions {
 public:
     ModelFactory(QOpenGLWidget* _glWidget);
     ~ModelFactory();
 
     QOpenGLWidget* glWidget;
+
+    //Shaders
+    GLuint shaderProgramDefault = 0;
+    GLuint shaderProgramEnergy = 0;
+    GLuint createShaders(QString vertexShaderFile, QString fragmentShaderFile);
+    void destroyShaders();
 
     std::shared_ptr<OffModel> shipOffModel = nullptr;
     std::shared_ptr<OffModel> gunshotOffModel = nullptr;

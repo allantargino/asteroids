@@ -12,9 +12,14 @@ ModelFactory::ModelFactory(QOpenGLWidget* _glWidget)
 
     QString asteroidFile = "..\\..\\models\\sphere.off";
     asteroidOffModel = std::make_shared<OffModel>(asteroidFile);
+
+
+    glWidget->makeCurrent();
 }
 
-ModelFactory::~ModelFactory(){}
+ModelFactory::~ModelFactory(){
+    destroyShaders();
+}
 
 
 std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
@@ -23,12 +28,8 @@ std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
 }
 
 std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
-    QString vertexShaderFile(":/shaders/vshader_default.glsl");
-    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
-
-
     QVector3D position = QVector3D(0,0,0);
-    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, size, vertexShaderFile, fragmentShaderFile, position);
+    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, shaderProgramDefault, size, position);
     ship->Create();
 
     ship->id = QUuid::createUuid().toString();
@@ -51,6 +52,7 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
 
     auto gunshot = GunshotQueue.dequeue();
 
+    gunshot->initialPosition = position;
     gunshot->currentPosition = position;
     gunshot->angle = ship->angle;
 
@@ -79,8 +81,19 @@ void ModelFactory::RemoveGunshotInstance(std::shared_ptr<Gunshot> gunshot){
 
 void ModelFactory::LoadInstances(){   
     if(!isInitialized){
+        initializeOpenGLFunctions();
+
+        //Compile shaders:
+        QString vertexShaderFileDefault(":/shaders/vshader_default.glsl");
+        QString vertexShaderFileEnergy(":/shaders/vshader_energy.glsl");
+        QString fragmentShaderFileDefault(":/shaders/fshader_default.glsl");
+
+        shaderProgramDefault = createShaders(vertexShaderFileEnergy, fragmentShaderFileDefault);
+        //shaderProgramEnergy = createShaders(vertexShaderFileEnergy, fragmentShaderFileDefault);
+
         LoadAsteroidInstances();
         LoadGunshotInstances();
+
         isInitialized=true;
     }
 }
@@ -101,9 +114,6 @@ void ModelFactory::LoadGunshotInstances(){
 
 
 std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
-    QString vertexShaderFile(":/shaders/vshader_default.glsl");
-    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
-
     float HI = 2.0f;
     float LO = 0.5f;
     float factor = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
@@ -141,7 +151,7 @@ std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
     //Random angle
     angle += angleChoice * AngleSignalChoice;
 
-    auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, size, vertexShaderFile, fragmentShaderFile, initPoint);
+    auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, shaderProgramDefault, size, initPoint);
     asteroid->Create();
 
     asteroid->initialPosition = initPoint;
@@ -155,16 +165,114 @@ std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
 }
 
 std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
-    QString vertexShaderFile(":/shaders/vshader_energy.glsl");
-    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
-
     float size =  Physics::gunshotSize;
     QVector3D position(0.0f,0.0f,0.0f);
 
-    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size, vertexShaderFile, fragmentShaderFile, position);
+    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, shaderProgramDefault, size, position);
     gunshot->Create();
 
     gunshot->id = QUuid::createUuid().toString();
 
     return gunshot;
+}
+
+
+GLuint ModelFactory::createShaders(QString vertexShaderFile, QString fragmentShaderFile)
+{
+    // makeCurrent ();
+    destroyShaders();
+
+    QFile vs(vertexShaderFile);
+    QFile fs(fragmentShaderFile);
+
+    vs.open(QFile::ReadOnly | QFile::Text);
+    fs.open(QFile::ReadOnly | QFile::Text);
+
+    QTextStream streamVs(&vs), streamFs(&fs);
+
+    QString qtStringVs = streamVs.readAll();
+    QString qtStringFs = streamFs.readAll();
+
+    std::string stdStringVs = qtStringVs.toStdString();
+    std::string stdStringFs = qtStringFs.toStdString();
+
+    // Create an empty vertex shader handle
+    GLuint vertexShader = 0;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    // Send the vertex shader source code to GL
+    const GLchar* source = stdStringVs.c_str();
+    glShaderSource(vertexShader, 1, &source, 0);
+    // Compile the vertex shader
+    glCompileShader(vertexShader);
+    GLint isCompiled = 0;
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
+    if (isCompiled == GL_FALSE) {
+        GLint maxLength = 0;
+        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
+        // The maxLength includes the NULL character
+        std::vector<GLchar> infoLog(maxLength);
+        glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
+        qDebug("%s", &infoLog[0]);
+        glDeleteShader(vertexShader);
+        return 0;
+    }
+
+    // Create an empty fragment shader handle
+    GLuint fragmentShader = 0;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    // Send the fragment shader source code to GL
+    // Note that std :: string ’s . c_str is NULL character terminated.
+    source = stdStringFs.c_str();
+    glShaderSource(fragmentShader, 1, &source, 0);
+    // Compile the fragment shader
+    glCompileShader(fragmentShader);
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
+    if (isCompiled == GL_FALSE) {
+        GLint maxLength = 0;
+        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
+        std::vector<GLchar> infoLog(maxLength);
+        glGetShaderInfoLog(fragmentShader, maxLength, &maxLength,
+            &infoLog[0]);
+        qDebug("%s", &infoLog[0]);
+        glDeleteShader(fragmentShader);
+        glDeleteShader(vertexShader);
+        return 0;
+    }
+
+    GLuint shaderProgram = glCreateProgram();
+    // Attach our shaders to our program
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    // Link our program
+    glLinkProgram(shaderProgram);
+    // Note the different functions here : glGetProgram * instead of glGetShader *.
+    GLint isLinked = 0;
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, (int*)&isLinked);
+    if (isLinked == GL_FALSE) {
+        GLint maxLength = 0;
+        glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
+        // The maxLength includes the NULL character
+        std::vector<GLchar> infoLog(maxLength);
+        glGetProgramInfoLog(shaderProgram, maxLength, &maxLength,
+            &infoLog[0]);
+        qDebug("%s", &infoLog[0]);
+        glDeleteProgram(shaderProgram);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+        return 0;
+    }
+
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+    vs.close();
+    fs.close();
+
+    return shaderProgram;
+}
+
+void ModelFactory::destroyShaders()
+{
+    glDeleteProgram(shaderProgramDefault);
 }
