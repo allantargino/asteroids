@@ -8,17 +8,17 @@ OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
 
     shipPlayer = new QMediaPlayer;
     shipPlayer->setVolume(0);
-    shipPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\bangLarge.wav"));
+    shipPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\bangLarge.wav"));
     shipPlayer->play();
 
     shotPlayer = new QMediaPlayer;
     shotPlayer->setVolume(0);
-    shotPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\fire.wav"));
+    shotPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\fire.wav"));
     shotPlayer->play();
 
     asteroidPlayer = new QMediaPlayer;
     asteroidPlayer->setVolume(0);
-    asteroidPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\bangSmall.wav"));
+    asteroidPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\bangSmall.wav"));
     asteroidPlayer->play();
 
     currentScore = 0;
@@ -57,55 +57,56 @@ void OpenGLWidget::paintGL()
         return;
 
     //Nave do jogador
-    if (!ship)
-        return;
     ship->drawModel();
 
     //Vidas do jogador
     for (std::shared_ptr<Ship> &life : lifeManager->ships)
-    {
-        if(life)
-            life->drawModel();
-    }
+        life->drawModel();
 
     //Tiros da nave
     QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
     while (i.hasNext()) {
         i.next();
-        if(i.value())
-            i.value()->drawModel();
+        i.value()->drawModel();
     }
 
     //Asteroids
     QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
     while (i_ast.hasNext()) {
         i_ast.next();
-        if(i_ast.value())
-            i_ast.value()->drawModel();
+        i_ast.value()->drawModel();
     }
 }
 
 void OpenGLWidget::startGame()
 {
+    //Resource Pool
     factory->LoadInstances();
 
+    //Audio enable
     shipPlayer->setVolume(100);
     shotPlayer->setVolume(100);
     asteroidPlayer->setVolume(100);
 
+    //Enable state handling
     emit updateButtonEnable(false);
     emit updateGameText(QString(""));
 
+    //Current score handling
     currentScore = 0;
     emit updateCurrentScore(currentScore);
 
+    //Level handling
     level = 1;
     emit updateLevel(QString("Fase: %1").arg(level));
 
+    //5 lifes
     lifeManager->SetLifeCount(5);
 
+    //Create Ship
     ship = factory->GetShipInstance();
 
+    //Game starts
     playing = true;
 
     update();
@@ -125,15 +126,7 @@ void OpenGLWidget::keyPressEvent(QKeyEvent* event)
         ship->MoveUp();
         break;
     case Qt::Key_Space:
-    {
-        if(!playing)
-            return;
-
-        auto gunshot = factory->GetGunshotInstance(ship.get());
-        gunshots[gunshot->id] = gunshot;
-
-        shotPlayer->play();
-    }
+        triggerGunshot();
         break;
     case Qt::Key_Escape:
         qApp->quit();
@@ -152,6 +145,18 @@ void OpenGLWidget::animate()
     float elapsedTime = time.restart() / 1000.0f;
 
     //Gunshots Colisions and Limits
+    checkGunshotsColisions(elapsedTime);
+
+    //Asteroids Colisions and Limits
+    checkAsteroidsColisions(elapsedTime);
+
+    //New Asteroids
+    insertNewAsteroids(elapsedTime);
+
+    update();
+}
+
+void OpenGLWidget::checkGunshotsColisions(float elapsedTime){
     QHashIterator<QString, std::shared_ptr<Gunshot>> i(gunshots);
     while (i.hasNext()) {
         i.next();
@@ -204,8 +209,9 @@ void OpenGLWidget::animate()
             }
         }
     }
+}
 
-    //Asteroids Colisions and Limits
+void OpenGLWidget::checkAsteroidsColisions(float elapsedTime){
     QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
     while (i_ast.hasNext()) {
         i_ast.next();
@@ -243,11 +249,6 @@ void OpenGLWidget::animate()
             }
         }
     }
-
-    //New Asteroids
-    insertNewAsteroids(elapsedTime);
-
-    update();
 }
 
 void OpenGLWidget::insertNewAsteroids(float elapsedTime){
@@ -285,6 +286,7 @@ void OpenGLWidget::setGameOver(){
     emit updateLevel("");
 
     removeAllAsteroids();
+    removeAllGunshots();
 }
 
 void OpenGLWidget::removeAllAsteroids(){
@@ -298,4 +300,27 @@ void OpenGLWidget::removeAllAsteroids(){
             factory->RemoveAsteroidInstance(asteroid);
         }
     }
+}
+
+void OpenGLWidget::removeAllGunshots(){
+    QHashIterator<QString, std::shared_ptr<Gunshot>> i_ast(gunshots);
+    while (i_ast.hasNext()) {
+        i_ast.next();
+        auto gunshot = i_ast.value();
+        if(gunshot)
+        {
+            gunshots.remove(gunshot->id);
+            factory->RemoveGunshotInstance(gunshot);
+        }
+    }
+}
+
+void OpenGLWidget::triggerGunshot(){
+    if(!playing)
+        return;
+
+    auto gunshot = factory->GetGunshotInstance(ship.get());
+    gunshots[gunshot->id] = gunshot;
+
+    shotPlayer->play();
 }
