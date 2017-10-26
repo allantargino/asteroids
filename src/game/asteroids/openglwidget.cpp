@@ -279,7 +279,23 @@ void OpenGLWidget::increasePlayerScore(){
 
 void OpenGLWidget::setGameOver(){
     playing = false;
+
     emit updateGameText(QString("GAME OVER"));
     emit updateButtonEnable(true);
     emit updateLevel("");
+
+    removeAllAsteroids();
+}
+
+void OpenGLWidget::removeAllAsteroids(){
+    QHashIterator<QString, std::shared_ptr<Asteroid>> i_ast(asteroids);
+    while (i_ast.hasNext()) {
+        i_ast.next();
+        auto asteroid = i_ast.value();
+        if(asteroid)
+        {
+            asteroids.remove(asteroid->id);
+            factory->RemoveAsteroidInstance(asteroid);
+        }
+    }
 }

@@ -43,7 +43,6 @@ private:
     QTime time;
     //Sounds:
     QMediaPlayer* shipPlayer;
-    //QSoundEffect shotPlayer;
     QMediaPlayer* shotPlayer;
     QMediaPlayer* asteroidPlayer;
     //Control:
@@ -54,6 +53,7 @@ private:
     float tempTime;
 
     void insertNewAsteroids(float elapsedTime);
+    void removeAllAsteroids();
 
     void increasePlayerScore();
     void setGameOver();
