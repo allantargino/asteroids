@@ -52,11 +52,18 @@ private:
     int level;
     float tempTime;
 
+    //Animations:
+    void checkGunshotsColisions(float elapsedTime);
+    void checkAsteroidsColisions(float elapsedTime);
     void insertNewAsteroids(float elapsedTime);
+
     void removeAllAsteroids();
+    void removeAllGunshots();
 
     void increasePlayerScore();
     void setGameOver();
+
+    void triggerGunshot();
 
 public slots:
     void startGame();
