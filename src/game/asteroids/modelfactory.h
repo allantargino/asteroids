@@ -29,9 +29,11 @@ public:
 
     void LoadInstances();
 
-
 private:
+    bool isInitialized = false;
+
     QQueue<std::shared_ptr<Asteroid>> AsteroidQueue;
+    QQueue<std::shared_ptr<Gunshot>> GunshotQueue;
 
     std::shared_ptr<Asteroid> CreateAsteroidInstance();
     std::shared_ptr<Gunshot> CreateGunshotInstance();

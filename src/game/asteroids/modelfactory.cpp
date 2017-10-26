@@ -16,6 +16,7 @@ ModelFactory::ModelFactory(QOpenGLWidget* _glWidget)
 
 ModelFactory::~ModelFactory(){}
 
+
 std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
     float size =  Physics::shipSize;
     return GetScaledShipInstance(size);
@@ -36,13 +37,8 @@ std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
 }
 
 std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
-    if(!ship)
+    if(!ship || GunshotQueue.isEmpty())
         return nullptr;
-
-    QString vertexShaderFile(":/shaders/vshader_energy.glsl");
-    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
-
-    float size =  Physics::gunshotSize;
 
     QVector3D position = Physics::GetNextLinearMoviment
             (
@@ -53,31 +49,40 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
                 Physics::shipMovimentFactor
              );
 
-    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size, vertexShaderFile, fragmentShaderFile, position);
-    gunshot->Create();
+    auto gunshot = GunshotQueue.dequeue();
 
     gunshot->currentPosition = position;
-
     gunshot->angle = ship->angle;
-    gunshot->id = QUuid::createUuid().toString();
 
     return gunshot;
 }
 
 std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
+    if(AsteroidQueue.isEmpty())
+        return nullptr;
+
     auto asteroid = AsteroidQueue.dequeue();
     asteroid->currentPosition = asteroid->initialPosition;
 
     return asteroid;
 }
 
+
 void ModelFactory::RemoveAsteroidInstance(std::shared_ptr<Asteroid> asteroid){
     AsteroidQueue.enqueue(asteroid);
 }
 
+void ModelFactory::RemoveGunshotInstance(std::shared_ptr<Gunshot> gunshot){
+    GunshotQueue.enqueue(gunshot);
+}
 
-void ModelFactory::LoadInstances(){
-    LoadAsteroidInstances();
+
+void ModelFactory::LoadInstances(){   
+    if(!isInitialized){
+        LoadAsteroidInstances();
+        LoadGunshotInstances();
+        isInitialized=true;
+    }
 }
 
 void ModelFactory::LoadAsteroidInstances(){
@@ -86,6 +91,14 @@ void ModelFactory::LoadAsteroidInstances(){
         AsteroidQueue.enqueue(asteroid);
     }
 }
+
+void ModelFactory::LoadGunshotInstances(){
+    for (int i = 0; i < 100; ++i) {
+        auto gunshot = CreateGunshotInstance();
+        GunshotQueue.enqueue(gunshot);
+    }
+}
+
 
 std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
     QString vertexShaderFile(":/shaders/vshader_default.glsl");
@@ -139,4 +152,19 @@ std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
     asteroid->id = QUuid::createUuid().toString();
 
     return asteroid;
+}
+
+std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
+    QString vertexShaderFile(":/shaders/vshader_energy.glsl");
+    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
+
+    float size =  Physics::gunshotSize;
+    QVector3D position(0.0f,0.0f,0.0f);
+
+    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, size, vertexShaderFile, fragmentShaderFile, position);
+    gunshot->Create();
+
+    gunshot->id = QUuid::createUuid().toString();
+
+    return gunshot;
 }

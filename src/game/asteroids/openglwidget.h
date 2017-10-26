@@ -6,6 +6,7 @@
 #include <QOpenGLExtraFunctions>
 #include <QtMath>
 #include <QMediaPlayer>
+#include <QSoundEffect>
 #include <QHash>
 #include "memory.h"
 #include "ship.h"
@@ -42,6 +43,7 @@ private:
     QTime time;
     //Sounds:
     QMediaPlayer* shipPlayer;
+    //QSoundEffect shotPlayer;
     QMediaPlayer* shotPlayer;
     QMediaPlayer* asteroidPlayer;
     //Control:
@@ -50,6 +52,8 @@ private:
     int topPoints;
     int level;
     float tempTime;
+
+    void insertNewAsteroids(float elapsedTime);
 
     void increasePlayerScore();
     void setGameOver();
