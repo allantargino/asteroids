@@ -6,6 +6,7 @@
 #include <QOpenGLExtraFunctions>
 #include <QtMath>
 #include <QMediaPlayer>
+#include <QSoundEffect>
 #include <QHash>
 #include "memory.h"
 #include "ship.h"
@@ -50,6 +51,9 @@ private:
     int topPoints;
     int level;
     float tempTime;
+
+    void insertNewAsteroids(float elapsedTime);
+    void removeAllAsteroids();
 
     void increasePlayerScore();
     void setGameOver();
