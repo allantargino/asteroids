@@ -218,6 +218,8 @@ void OpenGLWidget::checkAsteroidsColisions(float elapsedTime){
         auto asteroid = i_ast.value();
         if(asteroid)
         {
+            asteroid->color=1.0;
+
             asteroid->currentPosition = Physics::GetNextLinearMoviment
                     (
                         asteroid->currentPosition.x(),

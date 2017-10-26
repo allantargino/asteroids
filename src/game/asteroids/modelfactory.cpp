@@ -28,10 +28,6 @@ std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
 }
 
 std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
-    QString vertexShaderFile(":/shaders/vshader_default.glsl");
-    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
-
-
     QVector3D position = QVector3D(0,0,0);
     std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, shaderProgramDefault, size, position);
     ship->Create();
@@ -56,6 +52,7 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
 
     auto gunshot = GunshotQueue.dequeue();
 
+    gunshot->initialPosition = position;
     gunshot->currentPosition = position;
     gunshot->angle = ship->angle;
 
@@ -85,10 +82,18 @@ void ModelFactory::RemoveGunshotInstance(std::shared_ptr<Gunshot> gunshot){
 void ModelFactory::LoadInstances(){   
     if(!isInitialized){
         initializeOpenGLFunctions();
-        shaderProgramDefault =  createShaders();
+
+        //Compile shaders:
+        QString vertexShaderFileDefault(":/shaders/vshader_default.glsl");
+        QString vertexShaderFileEnergy(":/shaders/vshader_energy.glsl");
+        QString fragmentShaderFileDefault(":/shaders/fshader_default.glsl");
+
+        shaderProgramDefault = createShaders(vertexShaderFileEnergy, fragmentShaderFileDefault);
+        //shaderProgramEnergy = createShaders(vertexShaderFileEnergy, fragmentShaderFileDefault);
 
         LoadAsteroidInstances();
         LoadGunshotInstances();
+
         isInitialized=true;
     }
 }
@@ -109,9 +114,6 @@ void ModelFactory::LoadGunshotInstances(){
 
 
 std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
-    QString vertexShaderFile(":/shaders/vshader_default.glsl");
-    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
-
     float HI = 2.0f;
     float LO = 0.5f;
     float factor = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
@@ -163,9 +165,6 @@ std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
 }
 
 std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
-    QString vertexShaderFile(":/shaders/vshader_energy.glsl");
-    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
-
     float size =  Physics::gunshotSize;
     QVector3D position(0.0f,0.0f,0.0f);
 
@@ -178,13 +177,10 @@ std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
 }
 
 
-GLuint ModelFactory::createShaders()
+GLuint ModelFactory::createShaders(QString vertexShaderFile, QString fragmentShaderFile)
 {
     // makeCurrent ();
     destroyShaders();
-
-    QString vertexShaderFile(":/shaders/vshader_default.glsl");
-    QString fragmentShaderFile(":/shaders/fshader_default.glsl");
 
     QFile vs(vertexShaderFile);
     QFile fs(fragmentShaderFile);

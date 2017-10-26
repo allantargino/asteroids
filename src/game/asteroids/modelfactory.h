@@ -17,7 +17,8 @@ public:
 
     //Shaders
     GLuint shaderProgramDefault = 0;
-    GLuint createShaders();
+    GLuint shaderProgramEnergy = 0;
+    GLuint createShaders(QString vertexShaderFile, QString fragmentShaderFile);
     void destroyShaders();
 
     std::shared_ptr<OffModel> shipOffModel = nullptr;
