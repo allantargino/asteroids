@@ -8,17 +8,17 @@ OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
 
     shipPlayer = new QMediaPlayer;
     shipPlayer->setVolume(0);
-    shipPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\bangLarge.wav"));
+    shipPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\bangLarge.wav"));
     shipPlayer->play();
 
     shotPlayer = new QMediaPlayer;
     shotPlayer->setVolume(0);
-    shotPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\fire.wav"));
+    shotPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\fire.wav"));
     shotPlayer->play();
 
     asteroidPlayer = new QMediaPlayer;
     asteroidPlayer->setVolume(0);
-    asteroidPlayer->setMedia(QUrl::fromLocalFile("C:\\Repos\\asteroids\\src\\sounds\\bangSmall.wav"));
+    asteroidPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\bangSmall.wav"));
     asteroidPlayer->play();
 
     currentScore = 0;

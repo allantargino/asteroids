@@ -4,13 +4,13 @@ ModelFactory::ModelFactory(QOpenGLWidget* _glWidget)
 {
     glWidget = _glWidget;
 
-    QString shipFile = "C:\\Repos\\asteroids\\src\\models\\ship.off";
+    QString shipFile = "..\\..\\models\\ship.off";
     shipOffModel = std::make_shared<OffModel>(shipFile);
 
-    QString gunshotFile = "C:\\Repos\\asteroids\\src\\models\\sphere.off";
+    QString gunshotFile = "..\\..\\models\\sphere.off";
     gunshotOffModel = std::make_shared<OffModel>(gunshotFile);
 
-    QString asteroidFile = "C:\\Repos\\asteroids\\src\\models\\sphere.off";
+    QString asteroidFile = "..\\..\\models\\sphere.off";
     asteroidOffModel = std::make_shared<OffModel>(asteroidFile);
 }
 
