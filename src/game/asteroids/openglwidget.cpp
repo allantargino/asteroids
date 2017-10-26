@@ -226,7 +226,7 @@ void OpenGLWidget::checkAsteroidsColisions(float elapsedTime){
                         asteroid->currentPosition.y(),
                         asteroid->angle,
                         Physics::asteroidAngleCorrection,
-                        Physics::asteroidMovimentFactor * elapsedTime
+                        asteroid->speed * elapsedTime
                      );
 
             //Limits:
