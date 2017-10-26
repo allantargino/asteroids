@@ -189,16 +189,24 @@ void OpenGLWidget::checkGunshotsColisions(float elapsedTime){
                 while (i_ast.hasNext()) {
                     i_ast.next();
                     auto asteroid = i_ast.value();
-                    if(asteroid)
+                    if(asteroid && !asteroid->isFragment)
                     {
                         if(gunshot->CalculateColision(asteroid.get())){
                             qDebug("Colision Detected!!");
                             asteroidPlayer->play();
                             increasePlayerScore();
 
+                            //Create Fragments from father
+                            auto fragments = factory->GetFragmentInstance(asteroid->currentPosition, asteroid->scale);
+                            for (int j = 0; j < fragments.size(); ++j) {
+                                asteroids[fragments[j]->id] = fragments[j];
+                            }
+
+                            //Remove gunshot
                             gunshots.remove(gunshot->id);
                             factory->RemoveGunshotInstance(gunshot);
 
+                            //Remove father
                             asteroids.remove(asteroid->id);
                             factory->RemoveAsteroidInstance(asteroid);
 
@@ -218,8 +226,6 @@ void OpenGLWidget::checkAsteroidsColisions(float elapsedTime){
         auto asteroid = i_ast.value();
         if(asteroid)
         {
-            asteroid->color=1.0;
-
             asteroid->currentPosition = Physics::GetNextLinearMoviment
                     (
                         asteroid->currentPosition.x(),
@@ -229,23 +235,33 @@ void OpenGLWidget::checkAsteroidsColisions(float elapsedTime){
                         asteroid->speed * elapsedTime
                      );
 
+            //Color:
+            if(!asteroid->isFragment){
+                asteroid->color=1.0;
+            }else{
+                float dist = (asteroid->currentPosition.distanceToPoint(asteroid->initialPosition))/2.0f;
+                asteroid->color = 1.0 - dist * 6;
+            }
+
             //Limits:
             if(qAbs(asteroid->currentPosition.x())>1.4 || qAbs(asteroid->currentPosition.y()) >1.4){
                 asteroids.remove(asteroid->id);
                 asteroid.reset();
             }else{
                 //Crash:
-                if(ship->CalculateColision(asteroid.get())){
-                    shipPlayer->play();
+                if(!asteroid->isFragment){
+                    if(ship->CalculateColision(asteroid.get())){
+                        shipPlayer->play();
 
-                    asteroids.remove(asteroid->id);
-                    factory->RemoveAsteroidInstance(asteroid);
+                        asteroids.remove(asteroid->id);
+                        factory->RemoveAsteroidInstance(asteroid);
 
-                    lifeManager->DecreaseLifeCount();
-                    if(lifeManager->IsZero()){
-                        setGameOver();
-                        update();
-                        return;
+                        lifeManager->DecreaseLifeCount();
+                        if(lifeManager->IsZero()){
+                            setGameOver();
+                            update();
+                            return;
+                        }
                     }
                 }
             }

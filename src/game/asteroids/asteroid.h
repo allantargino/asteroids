@@ -9,6 +9,7 @@ public:
     ~Asteroid();
 
     float speed;
+    bool isFragment;
 };
 
 

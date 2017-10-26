@@ -29,6 +29,7 @@ public:
     std::shared_ptr<Ship> GetScaledShipInstance(float size);
     std::shared_ptr<Gunshot> GetGunshotInstance(Ship* ship);
     std::shared_ptr<Asteroid> GetAsteroidInstance();
+    std::vector<std::shared_ptr<Asteroid>> GetFragmentInstance(QVector3D initPosition, float fatherSize);
 
     void RemoveAsteroidInstance(std::shared_ptr<Asteroid>);
     void RemoveGunshotInstance(std::shared_ptr<Gunshot>);

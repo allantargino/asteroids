@@ -7,6 +7,7 @@ Asteroid::Asteroid(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offMode
     float factor = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
 
     this->speed  = Physics::asteroidMovimentFactor * factor;
+    this->isFragment = false;
 }
 Asteroid::~Asteroid()
 {
