@@ -16,8 +16,8 @@ public:
     QOpenGLWidget* glWidget;
 
     //Shaders
-    GLuint shaderProgram = 0;
-    void createShaders();
+    GLuint shaderProgramDefault = 0;
+    GLuint createShaders();
     void destroyShaders();
 
     std::shared_ptr<OffModel> shipOffModel = nullptr;

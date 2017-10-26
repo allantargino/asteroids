@@ -33,7 +33,7 @@ std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
 
 
     QVector3D position = QVector3D(0,0,0);
-    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, shaderProgram, size, position);
+    std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, shaderProgramDefault, size, position);
     ship->Create();
 
     ship->id = QUuid::createUuid().toString();
@@ -85,7 +85,7 @@ void ModelFactory::RemoveGunshotInstance(std::shared_ptr<Gunshot> gunshot){
 void ModelFactory::LoadInstances(){   
     if(!isInitialized){
         initializeOpenGLFunctions();
-        createShaders();
+        shaderProgramDefault =  createShaders();
 
         LoadAsteroidInstances();
         LoadGunshotInstances();
@@ -149,7 +149,7 @@ std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
     //Random angle
     angle += angleChoice * AngleSignalChoice;
 
-    auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, shaderProgram, size, initPoint);
+    auto asteroid = std::make_shared<Asteroid>(glWidget, asteroidOffModel, shaderProgramDefault, size, initPoint);
     asteroid->Create();
 
     asteroid->initialPosition = initPoint;
@@ -169,7 +169,7 @@ std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
     float size =  Physics::gunshotSize;
     QVector3D position(0.0f,0.0f,0.0f);
 
-    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, shaderProgram, size, position);
+    std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, shaderProgramDefault, size, position);
     gunshot->Create();
 
     gunshot->id = QUuid::createUuid().toString();
@@ -178,7 +178,7 @@ std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
 }
 
 
-void ModelFactory::createShaders()
+GLuint ModelFactory::createShaders()
 {
     // makeCurrent ();
     destroyShaders();
@@ -218,7 +218,7 @@ void ModelFactory::createShaders()
         glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
         qDebug("%s", &infoLog[0]);
         glDeleteShader(vertexShader);
-        return;
+        return 0;
     }
 
     // Create an empty fragment shader handle
@@ -240,10 +240,10 @@ void ModelFactory::createShaders()
         qDebug("%s", &infoLog[0]);
         glDeleteShader(fragmentShader);
         glDeleteShader(vertexShader);
-        return;
+        return 0;
     }
 
-    shaderProgram = glCreateProgram();
+    GLuint shaderProgram = glCreateProgram();
     // Attach our shaders to our program
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
@@ -263,7 +263,7 @@ void ModelFactory::createShaders()
         glDeleteProgram(shaderProgram);
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
-        return;
+        return 0;
     }
 
     glDetachShader(shaderProgram, vertexShader);
@@ -272,9 +272,11 @@ void ModelFactory::createShaders()
     glDeleteShader(fragmentShader);
     vs.close();
     fs.close();
+
+    return shaderProgram;
 }
 
 void ModelFactory::destroyShaders()
 {
-    glDeleteProgram(shaderProgram);
+    glDeleteProgram(shaderProgramDefault);
 }
