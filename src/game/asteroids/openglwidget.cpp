@@ -79,9 +79,9 @@ void OpenGLWidget::startGame()
     factory->LoadInstances();
 
     //Audio enable
-    shipPlayer->setVolume(100);
-    shotPlayer->setVolume(100);
-    asteroidPlayer->setVolume(100);
+    shipPlayer->setVolume(Physics::gameVolumeShipPlayer);
+    shotPlayer->setVolume(Physics::gameVolumeShotPlayer);
+    asteroidPlayer->setVolume(Physics::gameVolumeAsteroidPlayer);
 
     //Enable state handling
     emit updateButtonEnable(false);
@@ -96,7 +96,7 @@ void OpenGLWidget::startGame()
     emit updateLevel(QString("Fase: %1").arg(level));
 
     //5 lifes
-    lifeManager->SetLifeCount(5);
+    lifeManager->SetLifeCount(Physics::gameInitialLifes);
 
     //Create Ship
     ship = factory->GetShipInstance();
@@ -171,11 +171,11 @@ void OpenGLWidget::checkGunshotsColisions(float elapsedTime){
 
             //Color
             float dist = (gunshot->currentPosition.distanceToPoint(gunshot->initialPosition))/2.0f;
-            gunshot->color = 1.0 - dist;
+            gunshot->color = Physics::modelInitialColor - dist;
 
 
             //Limits:
-            if(qAbs(gunshot->currentPosition.x())>1.2 || qAbs(gunshot->currentPosition.y()) >1.2){
+            if(qAbs(gunshot->currentPosition.x())> Physics::gameOutboundGunshotPosition || qAbs(gunshot->currentPosition.y()) > Physics::gameOutboundGunshotPosition){
                 gunshots.remove(gunshot->id);
                 gunshot.reset();
             }else{
@@ -231,14 +231,14 @@ void OpenGLWidget::checkAsteroidsColisions(float elapsedTime){
 
             //Color:
             if(!asteroid->isFragment){
-                asteroid->color=1.0;
+                asteroid->color= Physics::modelInitialColor;
             }else{
                 float dist = (asteroid->currentPosition.distanceToPoint(asteroid->initialPosition))/2.0f;
-                asteroid->color = 1.0 - dist * 6;
+                asteroid->color = Physics::modelInitialColor - dist * Physics::fragmentColorFactor;
             }
 
             //Limits:
-            if(qAbs(asteroid->currentPosition.x())>1.4 || qAbs(asteroid->currentPosition.y()) >1.4){
+            if(qAbs(asteroid->currentPosition.x())> Physics::gameOutboundAsteroidPosition || qAbs(asteroid->currentPosition.y()) > Physics::gameOutboundAsteroidPosition){
                 asteroids.remove(asteroid->id);
                 asteroid.reset();
             }else{
@@ -265,10 +265,10 @@ void OpenGLWidget::checkAsteroidsColisions(float elapsedTime){
 
 void OpenGLWidget::insertNewAsteroids(float elapsedTime){
     tempTime += elapsedTime;
-    float asteroidTime = 2.0f / level;
+    float asteroidTime = Physics::gameInitialAsteroidTimeRelease / level;
     float launchTime = tempTime / asteroidTime;
-    if(launchTime > 1){
-        tempTime = 0;
+    if(launchTime > 1.0f){
+        tempTime = 0.0f;
         auto asteroid = factory->GetAsteroidInstance();
         asteroids[asteroid->id] = asteroid;
     }
@@ -286,7 +286,7 @@ void OpenGLWidget::increasePlayerScore(){
     }
 
     //Level
-    level = currentScore / 10 + 1;
+    level = currentScore / Physics::gameNextLevelFactor + 1;
     emit updateLevel(QString("Fase: %1").arg(level));
 }
 

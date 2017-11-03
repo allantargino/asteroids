@@ -51,6 +51,19 @@ static constexpr float shipLifeUpperStep        =   0.05f;
     static constexpr float  factoryAsteroidInstanceAngle    =   45.00f; //degrees
 static constexpr int  factoryAsteroidQuantity    =  250 ;
 static constexpr int  factoryGunshotQuantity    =  100 ;
+static constexpr float fragmentColorFactor = 6.00f;
+
+
+    //Game
+    static constexpr int gameInitialLifes = 5;
+    static constexpr float  gameInitialAsteroidTimeRelease =    2.00f; //seconds
+    static constexpr int  gameNextLevelFactor    =  10 ;
+    static constexpr float gameOutboundAsteroidPosition = 1.40f;
+static constexpr float gameOutboundGunshotPosition = 1.20f;
+    static constexpr int gameVolumeShipPlayer = 100;
+    static constexpr int gameVolumeShotPlayer = 100;
+        static constexpr int gameVolumeAsteroidPlayer = 100;
+
     //Functions
     static QVector3D GetNextLinearMoviment(float currentX, float currentY, float currentAngle, float angleCorrection, float movimentFactor);
     static float GetRandomFactor(float high, float low);
