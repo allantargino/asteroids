@@ -3,13 +3,13 @@
 LifeManager::LifeManager(ModelFactory* _factory){
     factory = _factory;
 
-    lastPosition = QVector2D(-1.0, 0.93);
+    lastPosition = QVector2D(Physics::shipLifeUpperX, Physics::shipLifeUpperY);
 }
 
 LifeManager::~LifeManager(){}
 
 void LifeManager::IncreaseLifeCount(){
-    lastPosition =QVector2D(lastPosition.x()+0.05, lastPosition.y());
+    lastPosition =QVector2D(lastPosition.x()+ Physics::shipLifeUpperStep, lastPosition.y());
 
     float size = Physics::shipLifeSize;
     auto ship = factory->GetScaledShipInstance(size);
@@ -18,14 +18,14 @@ void LifeManager::IncreaseLifeCount(){
 }
 
 void LifeManager::DecreaseLifeCount(){
-    lastPosition =QVector2D(lastPosition.x()-0.05, lastPosition.y());
+    lastPosition =QVector2D(lastPosition.x()-Physics::shipLifeUpperStep, lastPosition.y());
 
     ships.pop_back();
 }
 
 void LifeManager::SetLifeCount(int newCount){
     ships.clear();
-    lastPosition = QVector2D(-1.0, 0.93);
+    lastPosition = QVector2D(Physics::shipLifeUpperX, Physics::shipLifeUpperY);
 
     for(int i =0; i<newCount; i++)
         IncreaseLifeCount();

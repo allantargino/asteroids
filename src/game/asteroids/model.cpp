@@ -13,8 +13,8 @@ Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, GLu
     this->initialPosition = _initialPosition;
     this->currentPosition = QVector3D(0.0, 0.0, 0.0);
 
-    this->angle=0.0;
-    this->color=1.0;
+    this->angle=Physics::modelInitialAngle;
+    this->color=Physics::modelInitialColor;
 
     glWidget->makeCurrent();
 

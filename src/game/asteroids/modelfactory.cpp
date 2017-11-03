@@ -76,12 +76,10 @@ std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(QVector
     std::vector<std::shared_ptr<Asteroid>> fragments;
 
     //Number of fragments
-    int n = (qrand() % 4) + 3; //From 3 to 6 [3, 4, 5, 6]
+    int n = (qrand() % Physics::fragmentQuantityAdditionalMax) + Physics::fragmentQuantityInitial; //From 3 to 6 [3, 4, 5, 6]
 
     //Angle
-    float HI = 90.0f;
-    float LO = 0.0f;
-    float angle = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+    float angle = Physics::GetRandomFactor(Physics::fragmentAngleHighFactor, Physics::fragmentAngleLowFactor);
 
     //Step
     float step = 360.0f / n;
@@ -100,7 +98,7 @@ std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(QVector
         asteroid->angle = angle + step * i;
 
         asteroid->scale = size;
-        asteroid->speed  = Physics::asteroidMovimentFactor * 0.5;
+        asteroid->speed  = Physics::asteroidMovimentFactor *Physics::fragmentBooster;
 
         fragments.push_back(asteroid);
     }
@@ -138,14 +136,14 @@ void ModelFactory::LoadInstances(){
 }
 
 void ModelFactory::LoadAsteroidInstances(){
-    for (int i = 0; i < 250; ++i) {
+    for (int i = 0; i < Physics::factoryAsteroidQuantity; ++i) {
         auto asteroid = CreateAsteroidInstance();
         AsteroidQueue.enqueue(asteroid);
     }
 }
 
 void ModelFactory::LoadGunshotInstances(){
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < Physics::factoryGunshotQuantity; ++i) {
         auto gunshot = CreateGunshotInstance();
         GunshotQueue.enqueue(gunshot);
     }
@@ -153,20 +151,18 @@ void ModelFactory::LoadGunshotInstances(){
 
 
 std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
-    float HI = 2.0f;
-    float LO = 0.5f;
-    float factor = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
-    float size = Physics::asteroidMSize * factor;
+    float factor = Physics::GetRandomFactor(Physics::asteroidSizeHighFactor, Physics::asteroidSizeLowFactor);
+    float size = Physics::asteroidSize * factor;
 
     int choice = qrand() % 2;
     int AbsSignalChoice = qPow(-1, (qrand() % 2));
     int HVChoise = qPow(-1, (qrand() % 2));
     int AngleSignalChoice = qPow(-1, (qrand() % 2));
 
-    float Var = 1.2;
-    float absChoice = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/Var));
-    float Ang = 45.0;
-    float angleChoice = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/Ang));
+    float Var = Physics::factoryAsteroidInstancePosition;
+    float absChoice = Physics::GetRandomFactor(Var, 0.0f);
+    float Ang = Physics::factoryAsteroidInstanceAngle;
+    float angleChoice = Physics::GetRandomFactor(Ang, 0.0f);
 
     QVector2D initPoint;
     if(choice == 0){ // y fixed
