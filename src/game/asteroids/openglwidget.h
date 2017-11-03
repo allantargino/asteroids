@@ -66,6 +66,9 @@ private:
 
     void triggerGunshot();
 
+    //Init:
+    QMediaPlayer* getMediaPlayer(const QString &file);
+
 public slots:
     void startGame();
     void animate();

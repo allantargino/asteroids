@@ -6,20 +6,9 @@ OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
 
     lifeManager = std::make_unique<LifeManager>(factory.get());
 
-    shipPlayer = new QMediaPlayer;
-    shipPlayer->setVolume(0);
-    shipPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\bangLarge.wav"));
-    shipPlayer->play();
-
-    shotPlayer = new QMediaPlayer;
-    shotPlayer->setVolume(0);
-    shotPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\fire.wav"));
-    shotPlayer->play();
-
-    asteroidPlayer = new QMediaPlayer;
-    asteroidPlayer->setVolume(0);
-    asteroidPlayer->setMedia(QUrl::fromLocalFile("..\\..\\sounds\\bangSmall.wav"));
-    asteroidPlayer->play();
+    shipPlayer = getMediaPlayer("..\\..\\sounds\\bangLarge.wav");
+    shotPlayer = getMediaPlayer("..\\..\\sounds\\fire.wav");
+    asteroidPlayer = getMediaPlayer("..\\..\\sounds\\bangSmall.wav");
 
     currentScore = 0;
     topPoints=0;
@@ -346,4 +335,12 @@ void OpenGLWidget::triggerGunshot(){
     gunshots[gunshot->id] = gunshot;
 
     shotPlayer->play();
+}
+
+QMediaPlayer* OpenGLWidget::getMediaPlayer(const QString &file){
+    QMediaPlayer* player =  new QMediaPlayer;
+    player->setVolume(0);
+    player->setMedia(QUrl::fromLocalFile(file));
+    player->play();
+    return player;
 }
