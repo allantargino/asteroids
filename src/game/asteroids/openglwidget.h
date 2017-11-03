@@ -22,6 +22,7 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
 public:
     //OpenGL:
     OpenGLWidget(QWidget* parent = 0);
+    ~OpenGLWidget();
 
 protected:
     void initializeGL();

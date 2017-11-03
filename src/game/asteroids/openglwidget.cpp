@@ -29,6 +29,12 @@ OpenGLWidget::OpenGLWidget(QWidget* parent): QOpenGLWidget(parent)
     playing = false;
 }
 
+OpenGLWidget::~OpenGLWidget(){
+    delete shipPlayer;
+    delete shotPlayer;
+    delete asteroidPlayer;
+}
+
 void OpenGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -192,13 +198,12 @@ void OpenGLWidget::checkGunshotsColisions(float elapsedTime){
                     if(asteroid && !asteroid->isFragment)
                     {
                         if(gunshot->CalculateColision(asteroid.get())){
-                            qDebug("Colision Detected!!");
                             asteroidPlayer->play();
                             increasePlayerScore();
 
                             //Create Fragments from father
                             auto fragments = factory->GetFragmentInstance(asteroid->currentPosition, asteroid->scale);
-                            for (int j = 0; j < fragments.size(); ++j) {
+                            for (uint j = 0; j < fragments.size(); ++j) {
                                 asteroids[fragments[j]->id] = fragments[j];
                             }
 
