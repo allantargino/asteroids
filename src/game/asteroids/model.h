@@ -15,7 +15,7 @@
 
 class Model : public QOpenGLExtraFunctions {
 public:
-    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, GLuint _shaderProgram, float _scale, QVector3D _initialPosition);
+    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, const GLuint &_shaderProgram, float _scale, const QVector3D &_initialPosition);
     ~Model();
 
     QOpenGLWidget* glWidget;

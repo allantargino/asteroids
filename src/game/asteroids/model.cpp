@@ -1,6 +1,6 @@
 #include "model.h"
 
-Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, GLuint _shaderProgram, float _scale, QVector3D _initialPosition)
+Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, const GLuint &_shaderProgram, float _scale, const QVector3D &_initialPosition)
 {
     glWidget = _glWidget;
     offModel = _offModel;

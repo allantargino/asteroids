@@ -71,7 +71,7 @@ std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
     return asteroid;
 }
 
-std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(QVector3D initPosition, float fatherSize){
+std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(const QVector3D &initPosition, float fatherSize){
 
     std::vector<std::shared_ptr<Asteroid>> fragments;
 
@@ -211,7 +211,7 @@ std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
 }
 
 
-GLuint ModelFactory::createShaders(QString vertexShaderFile, QString fragmentShaderFile)
+GLuint ModelFactory::createShaders(const QString &vertexShaderFile, const QString &fragmentShaderFile)
 {
     // makeCurrent ();
     destroyShaders();

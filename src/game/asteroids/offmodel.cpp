@@ -1,13 +1,13 @@
 #include "offmodel.h"
 
-OffModel::OffModel(QString fileName)
+OffModel::OffModel(const QString &fileName)
 {
     readOFFFile(fileName);
 }
 
 OffModel::~OffModel(){}
 
-void OffModel::readOFFFile(QString const& fileName)
+void OffModel::readOFFFile(const QString &fileName)
 {
     std::ifstream stream;
     stream.open(fileName.toUtf8(), std::ifstream::in);

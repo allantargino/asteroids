@@ -18,7 +18,7 @@ public:
     //Shaders
     GLuint shaderProgramDefault = 0;
     GLuint shaderProgramEnergy = 0;
-    GLuint createShaders(QString vertexShaderFile, QString fragmentShaderFile);
+    GLuint createShaders(const QString &vertexShaderFile, const QString &fragmentShaderFile);
     void destroyShaders();
 
     std::shared_ptr<OffModel> shipOffModel = nullptr;
@@ -29,7 +29,7 @@ public:
     std::shared_ptr<Ship> GetScaledShipInstance(float size);
     std::shared_ptr<Gunshot> GetGunshotInstance(Ship* ship);
     std::shared_ptr<Asteroid> GetAsteroidInstance();
-    std::vector<std::shared_ptr<Asteroid>> GetFragmentInstance(QVector3D initPosition, float fatherSize);
+    std::vector<std::shared_ptr<Asteroid>> GetFragmentInstance(const QVector3D &initPosition, float fatherSize);
 
     void RemoveAsteroidInstance(std::shared_ptr<Asteroid>);
     void RemoveGunshotInstance(std::shared_ptr<Gunshot>);

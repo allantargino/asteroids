@@ -11,7 +11,7 @@
 
 class OffModel {
 public:
-    OffModel(QString fileName);
+    OffModel(const QString &fileName);
     ~OffModel();
 
     std::unique_ptr<QVector4D[]> vertices;
@@ -26,7 +26,7 @@ public:
     void drawModel(float angle, float scale);
 
 private:
-    void readOFFFile(const QString& fileName);
+    void readOFFFile(const QString &fileName);
 };
 
 #endif // OFFMODEL_H

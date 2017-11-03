@@ -76,8 +76,8 @@ public slots:
 signals:
     void updateCurrentScore(int points);
     void updateTopPoints(int points);
-    void updateGameText(QString text);
+    void updateGameText(const QString &text);
     void updateButtonEnable(bool value);
-    void updateLevel(QString text);
+    void updateLevel(const QString &text);
 };
 #endif // OPENGLWIDGET_H
