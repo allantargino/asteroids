@@ -8,12 +8,13 @@
 #include "asteroid.h"
 #include "physics.h"
 
-class ModelFactory : public QOpenGLExtraFunctions {
-public:
-    ModelFactory(QOpenGLWidget* _glWidget);
+class ModelFactory : public QOpenGLExtraFunctions
+{
+  public:
+    ModelFactory(QOpenGLWidget *_glWidget);
     ~ModelFactory();
 
-    QOpenGLWidget* glWidget;
+    QOpenGLWidget *glWidget;
 
     //Shaders
     GLuint shaderProgramDefault = 0;
@@ -27,7 +28,7 @@ public:
 
     std::shared_ptr<Ship> GetShipInstance();
     std::shared_ptr<Ship> GetScaledShipInstance(float size);
-    std::shared_ptr<Gunshot> GetGunshotInstance(Ship* ship);
+    std::shared_ptr<Gunshot> GetGunshotInstance(Ship *ship);
     std::shared_ptr<Asteroid> GetAsteroidInstance();
     std::vector<std::shared_ptr<Asteroid>> GetFragmentInstance(const QVector3D &initPosition, float fatherSize);
 
@@ -36,7 +37,7 @@ public:
 
     void LoadInstances();
 
-private:
+  private:
     bool isInitialized = false;
 
     QQueue<std::shared_ptr<Asteroid>> AsteroidQueue;
@@ -48,6 +49,5 @@ private:
     void LoadAsteroidInstances();
     void LoadGunshotInstances();
 };
-
 
 #endif // MODELFACTORY_H

@@ -13,12 +13,13 @@
 #include "offmodel.h"
 #include "physics.h"
 
-class Model : public QOpenGLExtraFunctions {
-public:
-    Model(QOpenGLWidget* _glWidget, std::shared_ptr<OffModel> _offModel, const GLuint &_shaderProgram, float _scale, const QVector3D &_initialPosition);
+class Model : public QOpenGLExtraFunctions
+{
+  public:
+    Model(QOpenGLWidget *_glWidget, std::shared_ptr<OffModel> _offModel, const GLuint &_shaderProgram, float _scale, const QVector3D &_initialPosition);
     ~Model();
 
-    QOpenGLWidget* glWidget;
+    QOpenGLWidget *glWidget;
 
     std::shared_ptr<OffModel> offModel = nullptr;
 
@@ -46,7 +47,7 @@ public:
     float angle;
     float color;
 
-    bool CalculateColision(Model* other);
+    bool CalculateColision(Model *other);
 };
 
 #endif // MODEL_H

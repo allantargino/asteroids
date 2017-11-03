@@ -9,8 +9,9 @@
 #include <iostream>
 #include <memory>
 
-class OffModel {
-public:
+class OffModel
+{
+  public:
     OffModel(const QString &fileName);
     ~OffModel();
 
@@ -25,7 +26,7 @@ public:
 
     void drawModel(float angle, float scale);
 
-private:
+  private:
     void readOFFFile(const QString &fileName);
 };
 

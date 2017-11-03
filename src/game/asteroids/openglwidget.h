@@ -16,21 +16,22 @@
 #include "modelfactory.h"
 #include "lifemanager.h"
 
-class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions {
+class OpenGLWidget : public QOpenGLWidget, protected QOpenGLExtraFunctions
+{
     Q_OBJECT
 
-public:
+  public:
     //OpenGL:
-    OpenGLWidget(QWidget* parent = 0);
+    OpenGLWidget(QWidget *parent = 0);
     ~OpenGLWidget();
 
-protected:
+  protected:
     void initializeGL();
     void resizeGL(int width, int height);
     void paintGL();
-    void keyPressEvent(QKeyEvent* event);
+    void keyPressEvent(QKeyEvent *event);
 
-private:
+  private:
     //Models:
     std::shared_ptr<Ship> ship = nullptr;
     QHash<QString, std::shared_ptr<Gunshot>> gunshots;
@@ -43,9 +44,9 @@ private:
     QTimer timer;
     QTime time;
     //Sounds:
-    QMediaPlayer* shipPlayer;
-    QMediaPlayer* shotPlayer;
-    QMediaPlayer* asteroidPlayer;
+    QMediaPlayer *shipPlayer;
+    QMediaPlayer *shotPlayer;
+    QMediaPlayer *asteroidPlayer;
     //Control:
     bool playing;
     int currentScore;
@@ -67,13 +68,13 @@ private:
     void triggerGunshot();
 
     //Init:
-    QMediaPlayer* getMediaPlayer(const QString &file);
+    QMediaPlayer *getMediaPlayer(const QString &file);
 
-public slots:
+  public slots:
     void startGame();
     void animate();
 
-signals:
+  signals:
     void updateCurrentScore(int points);
     void updateTopPoints(int points);
     void updateGameText(const QString &text);

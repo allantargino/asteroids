@@ -1,6 +1,6 @@
 #include "model.h"
 
-Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, const GLuint &_shaderProgram, float _scale, const QVector3D &_initialPosition)
+Model::Model(QOpenGLWidget *_glWidget, std::shared_ptr<OffModel> _offModel, const GLuint &_shaderProgram, float _scale, const QVector3D &_initialPosition)
 {
     glWidget = _glWidget;
     offModel = _offModel;
@@ -8,13 +8,13 @@ Model::Model(QOpenGLWidget* _glWidget,  std::shared_ptr<OffModel> _offModel, con
 
     scale = _scale;
 
-    this->hitBoxRadius = this->offModel->invDiag*scale;
+    this->hitBoxRadius = this->offModel->invDiag * scale;
 
     this->initialPosition = _initialPosition;
     this->currentPosition = QVector3D(0.0, 0.0, 0.0);
 
-    this->angle=Physics::modelInitialAngle;
-    this->color=Physics::modelInitialColor;
+    this->angle = Physics::modelInitialAngle;
+    this->color = Physics::modelInitialColor;
 
     glWidget->makeCurrent();
 
@@ -51,18 +51,17 @@ void Model::createVBOs()
 
     glGenBuffers(1, &vboIndices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, offModel->numFaces * 3 * sizeof(
-                                                             unsigned int),
-        offModel->indices.get(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, offModel->numFaces * 3 * sizeof(unsigned int),
+                 offModel->indices.get(), GL_STATIC_DRAW);
 }
 
 void Model::drawModel()
 {
     modelMatrix.setToIdentity(); //M=I
     modelMatrix.translate(currentPosition);
-    modelMatrix.rotate(angle, 0.0, 0.0, 1.0); // Rotação apenas em Z (plano XY)
-    modelMatrix.scale(offModel->invDiag*scale, offModel->invDiag*scale, offModel->invDiag*scale); //M=I*S
-    modelMatrix.translate(-offModel->midPoint); //M=I*S*T
+    modelMatrix.rotate(angle, 0.0, 0.0, 1.0);                                                           // Rotação apenas em Z (plano XY)
+    modelMatrix.scale(offModel->invDiag * scale, offModel->invDiag * scale, offModel->invDiag * scale); //M=I*S
+    modelMatrix.translate(-offModel->midPoint);                                                         //M=I*S*T
 
     glBindVertexArray(vao);
     glUseProgram(shaderProgram);
@@ -83,8 +82,8 @@ void Model::Create()
 
 //Extra Functions:
 
-bool Model::CalculateColision(Model* other)
-{   
+bool Model::CalculateColision(Model *other)
+{
     float distance = this->currentPosition.distanceToPoint(other->currentPosition);
     return distance < (this->hitBoxRadius + other->hitBoxRadius);
 }
