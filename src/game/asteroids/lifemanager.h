@@ -1,20 +1,21 @@
 #ifndef LIFEMANAGER_H
 #define LIFEMANAGER_H
 
+#include <vector>
 #include "ship.h"
 #include "physics.h"
 #include "modelfactory.h"
-#include "vector"
 
-class LifeManager {
-public:
-    LifeManager(ModelFactory* _factory);
+class LifeManager
+{
+  public:
+    LifeManager(ModelFactory *_factory);
     ~LifeManager();
 
     std::vector<std::shared_ptr<Ship>> ships;
 
     //Model Factory:
-    ModelFactory* factory;
+    ModelFactory *factory;
 
     void IncreaseLifeCount();
     void DecreaseLifeCount();
@@ -23,7 +24,7 @@ public:
     int GetLifeCount();
     bool IsZero();
 
-private:
+  private:
     int count;
     QVector2D lastPosition;
 };

@@ -9,9 +9,10 @@
 #include <iostream>
 #include <memory>
 
-class OffModel {
-public:
-    OffModel(QString fileName);
+class OffModel
+{
+  public:
+    OffModel(const QString &fileName);
     ~OffModel();
 
     std::unique_ptr<QVector4D[]> vertices;
@@ -25,8 +26,8 @@ public:
 
     void drawModel(float angle, float scale);
 
-private:
-    void readOFFFile(const QString& fileName);
+  private:
+    void readOFFFile(const QString &fileName);
 };
 
 #endif // OFFMODEL_H

@@ -1,6 +1,6 @@
 #include "modelfactory.h"
 
-ModelFactory::ModelFactory(QOpenGLWidget* _glWidget)
+ModelFactory::ModelFactory(QOpenGLWidget *_glWidget)
 {
     glWidget = _glWidget;
 
@@ -13,22 +13,23 @@ ModelFactory::ModelFactory(QOpenGLWidget* _glWidget)
     QString asteroidFile = "..\\..\\models\\sphere.off";
     asteroidOffModel = std::make_shared<OffModel>(asteroidFile);
 
-
     glWidget->makeCurrent();
 }
 
-ModelFactory::~ModelFactory(){
+ModelFactory::~ModelFactory()
+{
     destroyShaders();
 }
 
-
-std::shared_ptr<Ship> ModelFactory::GetShipInstance(){
-    float size =  Physics::shipSize;
+std::shared_ptr<Ship> ModelFactory::GetShipInstance()
+{
+    float size = Physics::shipSize;
     return GetScaledShipInstance(size);
 }
 
-std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
-    QVector3D position = QVector3D(0,0,0);
+std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size)
+{
+    QVector3D position = QVector3D(0, 0, 0);
     std::shared_ptr<Ship> ship = std::make_shared<Ship>(glWidget, shipOffModel, shaderProgramDefault, size, position);
     ship->Create();
 
@@ -37,18 +38,17 @@ std::shared_ptr<Ship> ModelFactory::GetScaledShipInstance(float size){
     return ship;
 }
 
-std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
-    if(!ship || GunshotQueue.isEmpty())
+std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship *ship)
+{
+    if (!ship || GunshotQueue.isEmpty())
         return nullptr;
 
-    QVector3D position = Physics::GetNextLinearMoviment
-            (
-                ship->currentPosition.x(),
-                ship->currentPosition.y(),
-                ship->angle,
-                Physics::shipAngleCorrection,
-                Physics::shipMovimentFactor
-             );
+    QVector3D position = Physics::GetNextLinearMoviment(
+        ship->currentPosition.x(),
+        ship->currentPosition.y(),
+        ship->angle,
+        Physics::shipAngleCorrection,
+        Physics::shipMovimentFactor);
 
     auto gunshot = GunshotQueue.dequeue();
 
@@ -59,8 +59,9 @@ std::shared_ptr<Gunshot> ModelFactory::GetGunshotInstance(Ship* ship){
     return gunshot;
 }
 
-std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
-    if(AsteroidQueue.isEmpty())
+std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance()
+{
+    if (AsteroidQueue.isEmpty())
         return nullptr;
 
     auto asteroid = AsteroidQueue.dequeue();
@@ -71,17 +72,16 @@ std::shared_ptr<Asteroid> ModelFactory::GetAsteroidInstance(){
     return asteroid;
 }
 
-std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(QVector3D initPosition, float fatherSize){
+std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(const QVector3D &initPosition, float fatherSize)
+{
 
     std::vector<std::shared_ptr<Asteroid>> fragments;
 
     //Number of fragments
-    int n = (qrand() % 4) + 3; //From 3 to 6 [3, 4, 5, 6]
+    int n = (qrand() % Physics::fragmentQuantityAdditionalMax) + Physics::fragmentQuantityInitial; //From 3 to 6 [3, 4, 5, 6]
 
     //Angle
-    float HI = 90.0f;
-    float LO = 0.0f;
-    float angle = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+    float angle = Physics::GetRandomFactor(Physics::fragmentAngleHighFactor, Physics::fragmentAngleLowFactor);
 
     //Step
     float step = 360.0f / n;
@@ -89,7 +89,8 @@ std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(QVector
     //Size
     float size = fatherSize / n;
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i)
+    {
         auto asteroid = AsteroidQueue.dequeue();
         asteroid->isFragment = true;
 
@@ -100,7 +101,7 @@ std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(QVector
         asteroid->angle = angle + step * i;
 
         asteroid->scale = size;
-        asteroid->speed  = Physics::asteroidMovimentFactor * 0.5;
+        asteroid->speed = Physics::asteroidMovimentFactor * Physics::fragmentBooster;
 
         fragments.push_back(asteroid);
     }
@@ -108,18 +109,20 @@ std::vector<std::shared_ptr<Asteroid>> ModelFactory::GetFragmentInstance(QVector
     return fragments;
 }
 
-
-void ModelFactory::RemoveAsteroidInstance(std::shared_ptr<Asteroid> asteroid){
+void ModelFactory::RemoveAsteroidInstance(std::shared_ptr<Asteroid> asteroid)
+{
     AsteroidQueue.enqueue(asteroid);
 }
 
-void ModelFactory::RemoveGunshotInstance(std::shared_ptr<Gunshot> gunshot){
+void ModelFactory::RemoveGunshotInstance(std::shared_ptr<Gunshot> gunshot)
+{
     GunshotQueue.enqueue(gunshot);
 }
 
-
-void ModelFactory::LoadInstances(){   
-    if(!isInitialized){
+void ModelFactory::LoadInstances()
+{
+    if (!isInitialized)
+    {
         initializeOpenGLFunctions();
 
         //Compile shaders:
@@ -133,58 +136,66 @@ void ModelFactory::LoadInstances(){
         LoadAsteroidInstances();
         LoadGunshotInstances();
 
-        isInitialized=true;
+        isInitialized = true;
     }
 }
 
-void ModelFactory::LoadAsteroidInstances(){
-    for (int i = 0; i < 250; ++i) {
+void ModelFactory::LoadAsteroidInstances()
+{
+    for (int i = 0; i < Physics::factoryAsteroidQuantity; ++i)
+    {
         auto asteroid = CreateAsteroidInstance();
         AsteroidQueue.enqueue(asteroid);
     }
 }
 
-void ModelFactory::LoadGunshotInstances(){
-    for (int i = 0; i < 100; ++i) {
+void ModelFactory::LoadGunshotInstances()
+{
+    for (int i = 0; i < Physics::factoryGunshotQuantity; ++i)
+    {
         auto gunshot = CreateGunshotInstance();
         GunshotQueue.enqueue(gunshot);
     }
 }
 
-
-std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
-    float HI = 2.0f;
-    float LO = 0.5f;
-    float factor = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
-    float size = Physics::asteroidMSize * factor;
+std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance()
+{
+    float factor = Physics::GetRandomFactor(Physics::asteroidSizeHighFactor, Physics::asteroidSizeLowFactor);
+    float size = Physics::asteroidSize * factor;
 
     int choice = qrand() % 2;
     int AbsSignalChoice = qPow(-1, (qrand() % 2));
     int HVChoise = qPow(-1, (qrand() % 2));
     int AngleSignalChoice = qPow(-1, (qrand() % 2));
 
-    float Var = 1.2;
-    float absChoice = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/Var));
-    float Ang = 45.0;
-    float angleChoice = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/Ang));
+    float Var = Physics::factoryAsteroidInstancePosition;
+    float absChoice = Physics::GetRandomFactor(Var, 0.0f);
+    float Ang = Physics::factoryAsteroidInstanceAngle;
+    float angleChoice = Physics::GetRandomFactor(Ang, 0.0f);
 
     QVector2D initPoint;
-    if(choice == 0){ // y fixed
-        initPoint = QVector2D(absChoice* AbsSignalChoice, Var*HVChoise);
-    }else{ // x fixed
-        initPoint = QVector2D(Var*HVChoise,absChoice * AbsSignalChoice);
+    if (choice == 0)
+    { // y fixed
+        initPoint = QVector2D(absChoice * AbsSignalChoice, Var * HVChoise);
+    }
+    else
+    { // x fixed
+        initPoint = QVector2D(Var * HVChoise, absChoice * AbsSignalChoice);
     }
 
     QVector2D initVector = initPoint.normalized();
     float angle;
     //Angle definition pointing to origin
-    if(initVector.y()>=0){
-        QVector2D refVector(1,0);
-        float dot = QVector2D::dotProduct(refVector,initVector);
+    if (initVector.y() >= 0)
+    {
+        QVector2D refVector(1, 0);
+        float dot = QVector2D::dotProduct(refVector, initVector);
         angle = qRadiansToDegrees(qAcos(dot)) + 180;
-    }else{
-        QVector2D refVector(-1,0);
-        float dot = QVector2D::dotProduct(refVector,initVector);
+    }
+    else
+    {
+        QVector2D refVector(-1, 0);
+        float dot = QVector2D::dotProduct(refVector, initVector);
         angle = qRadiansToDegrees(qAcos(dot));
     }
     //Random angle
@@ -202,9 +213,10 @@ std::shared_ptr<Asteroid> ModelFactory::CreateAsteroidInstance(){
     return asteroid;
 }
 
-std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
-    float size =  Physics::gunshotSize;
-    QVector3D position(0.0f,0.0f,0.0f);
+std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance()
+{
+    float size = Physics::gunshotSize;
+    QVector3D position(0.0f, 0.0f, 0.0f);
 
     std::shared_ptr<Gunshot> gunshot = std::make_shared<Gunshot>(glWidget, gunshotOffModel, shaderProgramDefault, size, position);
     gunshot->Create();
@@ -214,8 +226,7 @@ std::shared_ptr<Gunshot> ModelFactory::CreateGunshotInstance(){
     return gunshot;
 }
 
-
-GLuint ModelFactory::createShaders(QString vertexShaderFile, QString fragmentShaderFile)
+GLuint ModelFactory::createShaders(const QString &vertexShaderFile, const QString &fragmentShaderFile)
 {
     // makeCurrent ();
     destroyShaders();
@@ -238,13 +249,14 @@ GLuint ModelFactory::createShaders(QString vertexShaderFile, QString fragmentSha
     GLuint vertexShader = 0;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     // Send the vertex shader source code to GL
-    const GLchar* source = stdStringVs.c_str();
+    const GLchar *source = stdStringVs.c_str();
     glShaderSource(vertexShader, 1, &source, 0);
     // Compile the vertex shader
     glCompileShader(vertexShader);
     GLint isCompiled = 0;
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE) {
+    if (isCompiled == GL_FALSE)
+    {
         GLint maxLength = 0;
         glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
         // The maxLength includes the NULL character
@@ -265,12 +277,13 @@ GLuint ModelFactory::createShaders(QString vertexShaderFile, QString fragmentSha
     // Compile the fragment shader
     glCompileShader(fragmentShader);
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE) {
+    if (isCompiled == GL_FALSE)
+    {
         GLint maxLength = 0;
         glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
         std::vector<GLchar> infoLog(maxLength);
         glGetShaderInfoLog(fragmentShader, maxLength, &maxLength,
-            &infoLog[0]);
+                           &infoLog[0]);
         qDebug("%s", &infoLog[0]);
         glDeleteShader(fragmentShader);
         glDeleteShader(vertexShader);
@@ -285,14 +298,15 @@ GLuint ModelFactory::createShaders(QString vertexShaderFile, QString fragmentSha
     glLinkProgram(shaderProgram);
     // Note the different functions here : glGetProgram * instead of glGetShader *.
     GLint isLinked = 0;
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, (int*)&isLinked);
-    if (isLinked == GL_FALSE) {
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, (int *)&isLinked);
+    if (isLinked == GL_FALSE)
+    {
         GLint maxLength = 0;
         glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
         // The maxLength includes the NULL character
         std::vector<GLchar> infoLog(maxLength);
         glGetProgramInfoLog(shaderProgram, maxLength, &maxLength,
-            &infoLog[0]);
+                            &infoLog[0]);
         qDebug("%s", &infoLog[0]);
         glDeleteProgram(shaderProgram);
         glDeleteShader(vertexShader);
